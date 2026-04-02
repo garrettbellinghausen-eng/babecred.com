@@ -73,8 +73,8 @@ body::before {
 }
 
 .modal-logo-img {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     margin-bottom: 12px;
 }
 .modal-brand {
@@ -435,7 +435,7 @@ body::before {
     flex-shrink: 0;
 }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
-.topbar-logo { width: 30px; height: 30px; }
+.topbar-logo { width: 40px; height: 40px; }
 .logo {
     font-family: 'Anybody', sans-serif;
     font-weight: 900;
