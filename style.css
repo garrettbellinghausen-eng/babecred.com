@@ -428,30 +428,30 @@ body::before {
 .topbar {
     background: var(--black);
     color: var(--cream);
-    padding: 8px 20px;
+    padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
 }
-.topbar-left { display: flex; align-items: center; gap: 10px; }
-.topbar-logo { width: 40px; height: 40px; }
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.topbar-logo { width: 56px; height: 56px; }
 .logo {
     font-family: 'Anybody', sans-serif;
     font-weight: 900;
-    font-size: 16px;
+    font-size: 28px;
 }
 .logo span { color: var(--mustard); }
 .topbar-tagline {
-    font-size: 9px;
+    font-size: 12px;
     color: rgba(255,248,231,0.4);
     letter-spacing: 0.08em;
 }
-.topbar-right { display: flex; align-items: center; gap: 14px; }
-.topbar-name { font-size: 10px; color: rgba(255,248,231,0.5); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-name { font-size: 14px; color: rgba(255,248,231,0.5); }
 .topbar-balance {
     font-weight: 700;
-    font-size: 13px;
+    font-size: 22px;
 }
 .topbar-balance.positive { color: var(--green); }
 .topbar-balance.negative { color: var(--burnt); }
