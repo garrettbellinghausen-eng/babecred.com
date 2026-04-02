@@ -599,11 +599,12 @@ function openFullImage(src) {
     photoInput.addEventListener('change', function () {
         var file = this.files[0];
         if (!file || !userName) return;
-        photoBtn.textContent = '...';
+        var origHTML = photoBtn.innerHTML;
+        photoBtn.innerHTML = '...';
         photoBtn.disabled = true;
 
         Chat.uploadImage(file, function (err, url) {
-            photoBtn.textContent = '📷';
+            photoBtn.innerHTML = origHTML;
             photoBtn.disabled = false;
             if (err) {
                 console.warn('Upload failed:', err);

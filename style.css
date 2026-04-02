@@ -1025,15 +1025,17 @@ body::before {
 }
 .chat-form { display: flex; gap: 6px; align-items: center; }
 .photo-btn {
-    padding: 6px 8px;
+    padding: 4px 8px;
     background: none;
     border: 1px solid var(--border);
     border-radius: 4px;
-    font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
     line-height: 1;
     transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .photo-btn:hover { border-color: var(--mustard); }
 .photo-btn:active { background: rgba(232,163,23,0.1); }
