@@ -7,8 +7,13 @@ const Chat = (function () {
     let myPresenceRef;
     const MAX_MESSAGES = 200;
 
+    var initialized = false;
+
     function init(config, callbacks) {
-        firebase.initializeApp(config);
+        if (!initialized) {
+            firebase.initializeApp(config);
+            initialized = true;
+        }
         const db = firebase.database();
         messagesRef = db.ref('messages');
         presenceRef = db.ref('presence');

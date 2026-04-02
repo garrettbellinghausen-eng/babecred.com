@@ -98,11 +98,15 @@
         topbarName.textContent = name;
         chatName.textContent = name;
 
-        Chat.init(firebaseConfig, {
-            onMessage: renderChatMessage,
-            onPresence: function (users) { onlineCount.textContent = users.length; }
-        });
-        Chat.join(name);
+        try {
+            Chat.init(firebaseConfig, {
+                onMessage: renderChatMessage,
+                onPresence: function (users) { onlineCount.textContent = users.length; }
+            });
+            Chat.join(name);
+        } catch (e) {
+            console.warn('Chat init failed:', e);
+        }
         renderAll();
         chatInput.focus();
     }
