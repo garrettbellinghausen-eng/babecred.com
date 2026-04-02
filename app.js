@@ -342,13 +342,13 @@
 
     function getWizTimestamp() {
         if (wizState.when === 'now') return Date.now();
-        if (wizState.when === 'today') {
-            var t = new Date(); t.setHours(t.getHours() - 4);
-            return t.getTime();
-        }
         if (wizState.when === 'yesterday') {
             var y = new Date(); y.setDate(y.getDate() - 1);
             return y.getTime();
+        }
+        if (wizState.when === 'tomorrow') {
+            var t = new Date(); t.setDate(t.getDate() + 1);
+            return t.getTime();
         }
         if (wizState.when === 'custom' && wizState.whenDate) {
             return new Date(wizState.whenDate).getTime();
