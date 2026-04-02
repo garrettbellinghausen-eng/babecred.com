@@ -69,15 +69,26 @@
     const chatName = document.getElementById('chat-name');
     const onlineCount = document.getElementById('online-count');
 
-    // Custom modal refs
+    // Wizard refs
     const customModal = document.getElementById('custom-modal');
     const customTitle = document.getElementById('custom-modal-title');
-    const customDesc = document.getElementById('custom-desc');
-    const customValue = document.getElementById('custom-value');
-    const customHalflife = document.getElementById('custom-halflife');
-    const customHalflifeSection = document.getElementById('custom-halflife-section');
-    const customCancel = document.getElementById('custom-cancel');
-    const customConfirm = document.getElementById('custom-confirm');
+    const wizSteps = document.querySelectorAll('#wizard-steps .wstep');
+    const wizPages = [
+        document.getElementById('wiz-step-1'),
+        document.getElementById('wiz-step-2'),
+        document.getElementById('wiz-step-3'),
+        document.getElementById('wiz-step-4')
+    ];
+    const wizCategories = document.getElementById('wiz-categories');
+    const wizEffort = document.getElementById('wiz-effort');
+    const wizModifier = document.getElementById('wiz-modifier');
+    const wizEstimate = document.getElementById('wiz-estimate');
+    const wizDesc = document.getElementById('wiz-desc');
+    const wizSummary = document.getElementById('wiz-summary');
+    const wizBack = document.getElementById('wiz-back');
+    const wizNext = document.getElementById('wiz-next');
+    const wizStep2Label = document.getElementById('wiz-step2-label');
+    const wizStep3Label = document.getElementById('wiz-step3-label');
 
     // Goal modal refs
     const goalModal = document.getElementById('goal-modal');
@@ -191,35 +202,193 @@
         });
     }
 
-    // --- Custom modal ---
+    // --- Custom wizard ---
+
+    var DEPOSIT_CATS = [
+        { id: 'service', emoji: '🧹', name: 'Acts of Service', hint: 'Cleaning, cooking, errands, fixing' },
+        { id: 'time', emoji: '🕐', name: 'Quality Time', hint: 'Date night, activity, attention' },
+        { id: 'gift', emoji: '🎁', name: 'Gifts & Gestures', hint: 'Flowers, surprise, thoughtful' },
+        { id: 'words', emoji: '💬', name: 'Words & Attention', hint: 'Compliment, listening, remembering' },
+        { id: 'kids', emoji: '👶', name: 'Kid Duty', hint: 'Took kids, school, bedtime' },
+        { id: 'above', emoji: '✈️', name: 'Above & Beyond', hint: 'Trip, major surprise, big effort' }
+    ];
+    var WITHDRAW_CATS = [
+        { id: 'screen', emoji: '🎮', name: 'Screen Time', hint: 'Gaming, phone, TV binge' },
+        { id: 'social', emoji: '🍺', name: 'Boys Night / Social', hint: 'Night out, sports bar, group' },
+        { id: 'solo', emoji: '🏌️', name: 'Solo Activity', hint: 'Golf, fishing, hobby day' },
+        { id: 'forgot', emoji: '🗓️', name: 'Forgot Something', hint: 'Anniversary, plans, promise' },
+        { id: 'said', emoji: '🤦', name: 'Said Something Dumb', hint: '"You look fine", etc.' },
+        { id: 'trip', emoji: '✈️', name: 'Trip / Weekend Away', hint: 'Multi-day absence' }
+    ];
+    var DEP_EFFORT = [
+        { label: 'Quick (5 min or less)', hint: 'Took out trash, liked a post', base: 3, halfLife: 3 },
+        { label: 'Some effort (30-60 min)', hint: 'Cooked dinner, cleaned up', base: 12, halfLife: 7 },
+        { label: 'Real effort (1-2 hours)', hint: 'Date night, deep clean, project', base: 25, halfLife: 10 },
+        { label: 'Major effort (half day+)', hint: 'Took kids all day, planned a trip', base: 45, halfLife: 21 },
+        { label: 'Legendary (full day+)', hint: 'Surprise getaway, huge gesture', base: 60, halfLife: 28 }
+    ];
+    var WIT_DURATION = [
+        { label: 'A quick moment', hint: '"You look fine", eye roll', base: -8, rate: 2 },
+        { label: 'A few hours', hint: 'Gaming session, sports bar', base: -20, rate: 2 },
+        { label: 'Half a day', hint: 'Golf day, long hobby session', base: -35, rate: 2 },
+        { label: 'Full day', hint: 'All-day with the boys', base: -55, rate: 2 },
+        { label: 'Weekend', hint: 'Boys weekend, tournament', base: -80, rate: 2 },
+        { label: 'Multi-day trip', hint: 'Final 4, bachelor party', base: -150, rate: 1 }
+    ];
+    var DEP_MODIFIER = [
+        { label: 'She asked me to', hint: 'Still good but expected', mult: 0.7 },
+        { label: 'Unprompted — I just did it', hint: 'She didn\'t even have to ask', mult: 1.0 },
+        { label: 'She didn\'t even know she wanted it', hint: 'Anticipation — top tier', mult: 1.4 }
+    ];
+    var WIT_MODIFIER = [
+        { label: 'She won\'t even notice', hint: 'Barely registers', mult: 0.5 },
+        { label: 'Mildly annoyed', hint: 'The look. You know the look.', mult: 1.0 },
+        { label: 'Actually upset', hint: 'Silent treatment territory', mult: 1.4 },
+        { label: 'Sleeping on the couch', hint: 'You are in danger', mult: 2.0 }
+    ];
+
+    var wizState = { type: 'deposit', step: 1, cat: null, effort: null, modifier: null };
 
     function openCustomModal(type) {
+        wizState = { type: type, step: 1, cat: null, effort: null, modifier: null };
         customModalType = type;
         customTitle.textContent = type === 'deposit' ? 'Custom Deposit' : 'Custom Withdrawal';
-        customHalflifeSection.style.display = type === 'deposit' ? 'block' : 'none';
-        customDesc.value = '';
-        customValue.value = '';
+        wizDesc.value = '';
         customModal.classList.remove('hidden');
-        customDesc.focus();
+        renderWizardStep();
     }
 
-    customCancel.addEventListener('click', function () {
-        customModal.classList.add('hidden');
+    function renderWizardStep() {
+        var s = wizState.step;
+        wizPages.forEach(function (p, i) { p.classList.toggle('hidden', i !== s - 1); });
+        wizSteps.forEach(function (el, i) {
+            el.classList.remove('active', 'done');
+            if (i + 1 === s) el.classList.add('active');
+            if (i + 1 < s) el.classList.add('done');
+        });
+        wizBack.textContent = s === 1 ? 'Cancel' : 'Back';
+        wizNext.textContent = s === 4 ? 'Add Entry' : 'Next';
+
+        if (s === 1) renderWizCategories();
+        if (s === 2) renderWizEffort();
+        if (s === 3) renderWizModifier();
+        if (s === 4) renderWizReview();
+    }
+
+    function renderWizCategories() {
+        var cats = wizState.type === 'deposit' ? DEPOSIT_CATS : WITHDRAW_CATS;
+        wizCategories.innerHTML = '';
+        cats.forEach(function (c) {
+            var el = document.createElement('div');
+            el.className = 'wiz-cat' + (wizState.cat === c.id ? ' selected' : '');
+            el.innerHTML = '<div class="wiz-cat-emoji">' + c.emoji + '</div>'
+                + '<div class="wiz-cat-name">' + c.name + '</div>'
+                + '<div class="wiz-cat-hint">' + c.hint + '</div>';
+            el.addEventListener('click', function () {
+                wizState.cat = c.id;
+                wizState.catEmoji = c.emoji;
+                wizState.catName = c.name;
+                renderWizCategories();
+            });
+            wizCategories.appendChild(el);
+        });
+    }
+
+    function renderWizEffort() {
+        var opts = wizState.type === 'deposit' ? DEP_EFFORT : WIT_DURATION;
+        wizStep2Label.textContent = wizState.type === 'deposit' ? 'How much effort was this?' : 'How long is this?';
+        wizEffort.innerHTML = '';
+        opts.forEach(function (o, i) {
+            var el = document.createElement('div');
+            el.className = 'wiz-option' + (wizState.effort === i ? ' selected' : '');
+            var valCls = wizState.type === 'deposit' ? 'pos' : 'neg';
+            var prefix = o.base >= 0 ? '+' : '';
+            el.innerHTML = '<div><div class="wiz-option-label">' + o.label + '</div>'
+                + '<div class="wiz-option-hint">' + o.hint + '</div></div>'
+                + '<div class="wiz-option-val ' + valCls + '">' + prefix + o.base + '</div>';
+            el.addEventListener('click', function () {
+                wizState.effort = i;
+                wizState.effortData = o;
+                renderWizEffort();
+            });
+            wizEffort.appendChild(el);
+        });
+    }
+
+    function renderWizModifier() {
+        var opts = wizState.type === 'deposit' ? DEP_MODIFIER : WIT_MODIFIER;
+        wizStep3Label.textContent = wizState.type === 'deposit' ? 'Was it asked for?' : 'How mad is she?';
+        wizModifier.innerHTML = '';
+        opts.forEach(function (o, i) {
+            var el = document.createElement('div');
+            el.className = 'wiz-option' + (wizState.modifier === i ? ' selected' : '');
+            var multLabel = o.mult === 1.0 ? '1x' : o.mult + 'x';
+            el.innerHTML = '<div><div class="wiz-option-label">' + o.label + '</div>'
+                + '<div class="wiz-option-hint">' + o.hint + '</div></div>'
+                + '<div class="wiz-option-val">' + multLabel + '</div>';
+            el.addEventListener('click', function () {
+                wizState.modifier = i;
+                wizState.modData = o;
+                renderWizModifier();
+            });
+            wizModifier.appendChild(el);
+        });
+    }
+
+    function calcWizValue() {
+        if (!wizState.effortData || !wizState.modData) return 0;
+        return Math.round(wizState.effortData.base * wizState.modData.mult);
+    }
+
+    function renderWizReview() {
+        var val = calcWizValue();
+        var prefix = val >= 0 ? '+' : '';
+        var cls = val >= 0 ? 'pos' : 'neg';
+        wizEstimate.innerHTML = '<div class="wiz-est-num ' + cls + '">' + prefix + val + '</div>'
+            + '<div class="wiz-est-label">estimated babe cred</div>';
+
+        var lines = [];
+        lines.push('Category: ' + (wizState.catEmoji || '') + ' ' + (wizState.catName || ''));
+        lines.push('Effort: ' + (wizState.effortData ? wizState.effortData.label : ''));
+        lines.push('Modifier: ' + (wizState.modData ? wizState.modData.label + ' (' + wizState.modData.mult + 'x)' : ''));
+        if (wizState.type === 'deposit') {
+            lines.push('Half-life: ' + (wizState.effortData ? wizState.effortData.halfLife + ' days' : ''));
+        } else {
+            lines.push('Recovery: +' + (wizState.effortData ? wizState.effortData.rate : 2) + '/day');
+        }
+        wizSummary.innerHTML = lines.join('<br>');
+    }
+
+    wizBack.addEventListener('click', function () {
+        if (wizState.step === 1) {
+            customModal.classList.add('hidden');
+        } else {
+            wizState.step--;
+            renderWizardStep();
+        }
     });
 
-    customConfirm.addEventListener('click', function () {
-        const desc = customDesc.value.trim();
-        const val = parseInt(customValue.value);
-        if (!desc || !val || val < 1) return;
+    wizNext.addEventListener('click', function () {
+        if (wizState.step === 1 && wizState.cat === null) return;
+        if (wizState.step === 2 && wizState.effort === null) return;
+        if (wizState.step === 3 && wizState.modifier === null) return;
 
-        if (customModalType === 'deposit') {
-            const hl = parseInt(customHalflife.value);
-            CredEngine.addDeposit(desc, '✏️', val, hl);
+        if (wizState.step < 4) {
+            wizState.step++;
+            renderWizardStep();
         } else {
-            CredEngine.addWithdrawal(desc, '✏️', val * -1, 2);
+            // Submit
+            var val = calcWizValue();
+            var desc = wizDesc.value.trim() || wizState.catName;
+            var emoji = wizState.catEmoji || '✏️';
+            if (wizState.type === 'deposit') {
+                CredEngine.addDeposit(desc, emoji, Math.abs(val), wizState.effortData.halfLife);
+            } else {
+                CredEngine.addWithdrawal(desc, emoji, val, wizState.effortData.rate || 2);
+            }
+            customModal.classList.add('hidden');
+            renderAll();
         }
-        customModal.classList.add('hidden');
-        renderAll();
     });
 
     // --- Goal planner ---
@@ -476,113 +645,71 @@
         }
     }
 
-    // --- Lobby preview (mobile) ---
+    // --- Mobile: Big Add Buttons + Emoji Grid ---
 
-    const lobbyPreview = document.getElementById('lobby-preview');
-    const lobbyPreviewMsgs = document.getElementById('lobby-preview-msgs');
-    const lobbyPreviewTap = document.getElementById('lobby-preview-tap');
-    const lobbyHandle = document.getElementById('lobby-handle');
-    const previewOnlineCount = document.getElementById('preview-online-count');
+    var mobileAddGrid = document.getElementById('mobile-add-grid');
+    var mobileDepBtn = document.getElementById('mobile-dep-btn');
+    var mobileWitBtn = document.getElementById('mobile-wit-btn');
+    var mobileGridMode = null; // 'deposit' or 'withdrawal' or null
 
-    // Mirror chat messages into lobby preview
-    function addToLobbyPreview(msg) {
-        if (!lobbyPreviewMsgs) return;
-        const c = getNameColor(msg.name);
-        var balTag = '';
-        if (msg.balance !== undefined) {
-            const emoji = balEmoji(msg.balance);
-            const cls = msg.balance >= 0 ? 'pos' : 'neg';
-            const prefix = msg.balance >= 0 ? '+' : '';
-            balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + prefix + msg.balance + ']</span>';
+    function renderMobileGrid(type) {
+        if (mobileGridMode === type) {
+            // Toggle off
+            mobileGridMode = null;
+            mobileAddGrid.innerHTML = '';
+            mobileDepBtn.classList.remove('active');
+            mobileWitBtn.classList.remove('active');
+            return;
         }
-        const div = document.createElement('div');
-        div.innerHTML = '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
-            + balTag + ': ' + sanitize(msg.text);
-        lobbyPreviewMsgs.appendChild(div);
-        // Keep only last 20
-        while (lobbyPreviewMsgs.children.length > 20) {
-            lobbyPreviewMsgs.removeChild(lobbyPreviewMsgs.firstChild);
-        }
-        lobbyPreviewMsgs.scrollTop = lobbyPreviewMsgs.scrollHeight;
-    }
+        mobileGridMode = type;
+        mobileDepBtn.classList.toggle('active', type === 'deposit');
+        mobileWitBtn.classList.toggle('active', type === 'withdrawal');
 
-    // Patch renderChatMessage to also feed the preview
-    var _origRenderChat = renderChatMessage;
-    renderChatMessage = function (msg) {
-        _origRenderChat(msg);
-        addToLobbyPreview(msg);
-    };
+        var presets = type === 'deposit' ? CredEngine.DEPOSIT_PRESETS : CredEngine.WITHDRAWAL_PRESETS;
+        var html = '';
+        presets.forEach(function (p, i) {
+            var valCls = type === 'deposit' ? 'pos' : 'neg';
+            var prefix = p.value >= 0 ? '+' : '';
+            html += '<div class="mag-item" data-type="' + type + '" data-idx="' + i + '">'
+                + '<div class="mag-emoji">' + p.emoji + '</div>'
+                + '<div class="mag-name">' + p.desc + '</div>'
+                + '<div class="mag-val ' + valCls + '">' + prefix + p.value + '</div>'
+                + '</div>';
+        });
+        html += '<div class="mag-item custom-item" data-type="' + type + '" data-idx="custom">'
+            + '<div class="mag-emoji">✏️</div>'
+            + '<div class="mag-name">Custom</div>'
+            + '<div class="mag-val">?</div>'
+            + '</div>';
+        mobileAddGrid.innerHTML = html;
 
-    // Update preview online count when presence changes
-    var _origPresenceCb = null;
-
-    // Tap lobby preview -> switch to chat tab
-    if (lobbyPreviewTap) {
-        lobbyPreviewTap.addEventListener('click', function () {
-            var chatTab = document.querySelector('.mobile-tab[data-tab="chat"]');
-            if (chatTab) chatTab.click();
+        mobileAddGrid.querySelectorAll('.mag-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                var idx = this.dataset.idx;
+                var t = this.dataset.type;
+                if (idx === 'custom') {
+                    openCustomModal(t);
+                } else {
+                    var p = (t === 'deposit' ? CredEngine.DEPOSIT_PRESETS : CredEngine.WITHDRAWAL_PRESETS)[parseInt(idx)];
+                    if (t === 'deposit') {
+                        CredEngine.addDeposit(p.desc, p.emoji, p.value, p.halfLife);
+                    } else {
+                        CredEngine.addWithdrawal(p.desc, p.emoji, p.value, p.recoveryRate);
+                    }
+                    renderAll();
+                    // Brief flash
+                    item.style.background = 'rgba(232,163,23,0.2)';
+                    setTimeout(function () { item.style.background = ''; }, 300);
+                }
+            });
         });
     }
 
-    // --- Drag handle to resize lobby preview ---
-
-    if (lobbyHandle) {
-        var isDragging = false;
-        var startY = 0;
-        var startHeight = 0;
-        var minHeight = 80;
-        var maxHeight = 400;
-
-        function onDragStart(y) {
-            isDragging = true;
-            startY = y;
-            startHeight = lobbyPreview.offsetHeight;
-            lobbyPreview.style.transition = 'none';
-        }
-
-        function onDragMove(y) {
-            if (!isDragging) return;
-            var delta = startY - y;
-            var newHeight = Math.min(maxHeight, Math.max(minHeight, startHeight + delta));
-            lobbyPreview.style.height = newHeight + 'px';
-        }
-
-        function onDragEnd() {
-            isDragging = false;
-            lobbyPreview.style.transition = '';
-        }
-
-        // Touch events
-        lobbyHandle.addEventListener('touchstart', function (e) {
-            onDragStart(e.touches[0].clientY);
-        }, { passive: true });
-        document.addEventListener('touchmove', function (e) {
-            if (isDragging) onDragMove(e.touches[0].clientY);
-        }, { passive: true });
-        document.addEventListener('touchend', onDragEnd);
-
-        // Mouse events (for testing on desktop)
-        lobbyHandle.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            onDragStart(e.clientY);
-        });
-        document.addEventListener('mousemove', function (e) {
-            if (isDragging) onDragMove(e.clientY);
-        });
-        document.addEventListener('mouseup', onDragEnd);
+    if (mobileDepBtn) {
+        mobileDepBtn.addEventListener('click', function () { renderMobileGrid('deposit'); });
     }
-
-    // Update preview online count from presence
-    if (previewOnlineCount) {
-        var origInit = Chat.init;
-        Chat.init = function (config, callbacks) {
-            var origPresence = callbacks.onPresence;
-            callbacks.onPresence = function (users) {
-                if (origPresence) origPresence(users);
-                previewOnlineCount.textContent = users.length;
-            };
-            origInit(config, callbacks);
-        };
+    if (mobileWitBtn) {
+        mobileWitBtn.addEventListener('click', function () { renderMobileGrid('withdrawal'); });
     }
 
     // --- Periodic recalculation (every 60s for decay updates) ---
