@@ -1,6 +1,15 @@
 // app.js — UI wiring for BabeCred
 // Connects CredEngine and Chat to the DOM.
 
+// Global: full-screen image viewer
+function openFullImage(src) {
+    var overlay = document.createElement('div');
+    overlay.className = 'chat-img-full';
+    overlay.innerHTML = '<img src="' + src + '">';
+    overlay.addEventListener('click', function () { overlay.remove(); });
+    document.body.appendChild(overlay);
+}
+
 (function () {
     // --- Helpers ---
 
@@ -553,9 +562,16 @@
             var pfx = msg.balance >= 0 ? '+' : '';
             balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + pfx + msg.balance + ']</span>';
         }
+        var content = '';
+        if (msg.image) {
+            content = (msg.text ? sanitize(msg.text) + '<br>' : '')
+                + '<img src="' + sanitize(msg.image) + '" class="chat-img" onclick="openFullImage(this.src)">';
+        } else {
+            content = sanitize(msg.text);
+        }
         el.innerHTML = '<span class="cm-time">' + sanitize(t) + '</span>'
             + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
-            + balTag + ': ' + sanitize(msg.text);
+            + balTag + ': ' + content;
         chatMessages.appendChild(el);
         if (chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 120) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -569,6 +585,33 @@
         Chat.send(userName, text, Math.round(CredEngine.calculateBalance()));
         chatInput.value = '';
         chatInput.focus();
+    });
+
+    // --- Photo upload ---
+
+    var photoBtn = document.getElementById('photo-btn');
+    var photoInput = document.getElementById('photo-input');
+
+    photoBtn.addEventListener('click', function () {
+        photoInput.click();
+    });
+
+    photoInput.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file || !userName) return;
+        photoBtn.textContent = '...';
+        photoBtn.disabled = true;
+
+        Chat.uploadImage(file, function (err, url) {
+            photoBtn.textContent = '📷';
+            photoBtn.disabled = false;
+            if (err) {
+                console.warn('Upload failed:', err);
+                return;
+            }
+            Chat.sendImage(userName, url, Math.round(CredEngine.calculateBalance()));
+        });
+        photoInput.value = '';
     });
 
     // --- Share card ---

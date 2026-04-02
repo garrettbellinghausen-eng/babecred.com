@@ -56,5 +56,30 @@ const Chat = (function () {
         });
     }
 
-    return { init, join, send };
+    function sendImage(userName, imageUrl, balance) {
+        if (!messagesRef) return;
+        messagesRef.push({
+            name: userName,
+            text: '',
+            image: imageUrl,
+            balance: balance,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    }
+
+    function uploadImage(file, callback) {
+        var storageRef = firebase.storage().ref();
+        var filename = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.jpg';
+        var imageRef = storageRef.child('chat-images/' + filename);
+
+        imageRef.put(file).then(function (snapshot) {
+            return snapshot.ref.getDownloadURL();
+        }).then(function (url) {
+            callback(null, url);
+        }).catch(function (err) {
+            callback(err, null);
+        });
+    }
+
+    return { init, join, send, sendImage, uploadImage };
 })();
