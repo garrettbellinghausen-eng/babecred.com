@@ -314,15 +314,28 @@
 
     // --- Chat ---
 
+    function balEmoji(bal) {
+        if (bal >= 200) return '👑 ';
+        if (bal >= 100) return '🔥 ';
+        if (bal >= 50) return '💪 ';
+        if (bal <= -200) return '💀 ';
+        if (bal <= -100) return '🚨 ';
+        if (bal <= -50) return '😬 ';
+        return '';
+    }
+
     function renderChatMessage(msg) {
         const el = document.createElement('div');
         el.className = 'chat-msg';
         const c = getNameColor(msg.name);
         const t = msg.timestamp ? formatTime(msg.timestamp) : '';
-        const balTag = msg.balance !== undefined
-            ? ' <span class="cm-bal ' + (msg.balance >= 0 ? 'pos' : 'neg') + '">['
-            + (msg.balance >= 0 ? '+' : '') + msg.balance + ']</span>'
-            : '';
+        var balTag = '';
+        if (msg.balance !== undefined) {
+            const emoji = balEmoji(msg.balance);
+            const cls = msg.balance >= 0 ? 'pos' : 'neg';
+            const prefix = msg.balance >= 0 ? '+' : '';
+            balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + prefix + msg.balance + ']</span>';
+        }
         el.innerHTML = '<span class="cm-time">' + sanitize(t) + '</span>'
             + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
             + balTag + ': '
@@ -398,10 +411,13 @@
     function addToLobbyPreview(msg) {
         if (!lobbyPreviewMsgs) return;
         const c = getNameColor(msg.name);
-        const balTag = msg.balance !== undefined
-            ? ' <span class="cm-bal ' + (msg.balance >= 0 ? 'pos' : 'neg') + '">['
-            + (msg.balance >= 0 ? '+' : '') + msg.balance + ']</span>'
-            : '';
+        var balTag = '';
+        if (msg.balance !== undefined) {
+            const emoji = balEmoji(msg.balance);
+            const cls = msg.balance >= 0 ? 'pos' : 'neg';
+            const prefix = msg.balance >= 0 ? '+' : '';
+            balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + prefix + msg.balance + ']</span>';
+        }
         const div = document.createElement('div');
         div.innerHTML = '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
             + balTag + ': ' + sanitize(msg.text);
