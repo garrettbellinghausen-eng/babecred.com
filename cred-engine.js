@@ -28,6 +28,7 @@ const CredEngine = (function () {
         { emoji: '🍺', desc: "Boys' night out",     value: -30,  recoveryRate: 2 },
         { emoji: '🏈', desc: "Boys' weekend",       value: -80,  recoveryRate: 2 },
         { emoji: '📅', desc: 'Forgot anniversary',  value: -150, recoveryRate: 1 },
+        { emoji: '🏀', desc: 'Final 4 w/ the UConn boys', value: -200, recoveryRate: 1 },
     ];
 
     // --- Decay Math ---

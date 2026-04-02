@@ -555,6 +555,10 @@ body::before {
     flex-shrink: 0;
 }
 
+/* Lobby preview + drag handle — hidden on desktop */
+.lobby-handle { display: none; }
+.lobby-preview { display: none; }
+
 /* Mobile tabs - hidden on desktop */
 .mobile-tabs { display: none; }
 
@@ -641,4 +645,76 @@ body::before {
     .chat-input-area { padding: 10px 12px; }
     .chat-form input { padding: 10px; font-size: 14px; }
     .chat-form button { padding: 10px 16px; }
+
+    /* Lobby drag handle */
+    .lobby-handle {
+        display: flex;
+        height: 20px;
+        background: var(--black);
+        align-items: center;
+        justify-content: center;
+        cursor: ns-resize;
+        flex-shrink: 0;
+        user-select: none;
+        touch-action: none;
+    }
+    .handle-pill {
+        width: 36px;
+        height: 4px;
+        background: rgba(255,248,231,0.35);
+        border-radius: 2px;
+    }
+
+    /* Lobby preview panel */
+    .lobby-preview {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 110px;
+        background: var(--bg-dim);
+        overflow: hidden;
+        transition: height 0.05s;
+    }
+    .lobby-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 12px;
+        border-bottom: 1px solid var(--border-light);
+        flex-shrink: 0;
+    }
+    .lobby-preview-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 11px;
+        font-weight: 700;
+        font-style: italic;
+    }
+    .lobby-preview-online {
+        font-size: 8px;
+        color: var(--olive);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .lobby-preview-msgs {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 12px;
+        font-size: 10px;
+        line-height: 1.7;
+    }
+    .lobby-preview-msgs::-webkit-scrollbar { display: none; }
+    .lobby-preview-tap {
+        padding: 6px 12px;
+        text-align: center;
+        font-size: 9px;
+        color: var(--mustard);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-top: 1px solid var(--border-light);
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+    .lobby-preview-tap:active { color: var(--burnt); }
 }

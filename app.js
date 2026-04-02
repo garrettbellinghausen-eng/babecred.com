@@ -386,6 +386,112 @@
         }
     }
 
+    // --- Lobby preview (mobile) ---
+
+    const lobbyPreview = document.getElementById('lobby-preview');
+    const lobbyPreviewMsgs = document.getElementById('lobby-preview-msgs');
+    const lobbyPreviewTap = document.getElementById('lobby-preview-tap');
+    const lobbyHandle = document.getElementById('lobby-handle');
+    const previewOnlineCount = document.getElementById('preview-online-count');
+
+    // Mirror chat messages into lobby preview
+    function addToLobbyPreview(msg) {
+        if (!lobbyPreviewMsgs) return;
+        const c = getNameColor(msg.name);
+        const balTag = msg.balance !== undefined
+            ? ' <span class="cm-bal ' + (msg.balance >= 0 ? 'pos' : 'neg') + '">['
+            + (msg.balance >= 0 ? '+' : '') + msg.balance + ']</span>'
+            : '';
+        const div = document.createElement('div');
+        div.innerHTML = '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
+            + balTag + ': ' + sanitize(msg.text);
+        lobbyPreviewMsgs.appendChild(div);
+        // Keep only last 20
+        while (lobbyPreviewMsgs.children.length > 20) {
+            lobbyPreviewMsgs.removeChild(lobbyPreviewMsgs.firstChild);
+        }
+        lobbyPreviewMsgs.scrollTop = lobbyPreviewMsgs.scrollHeight;
+    }
+
+    // Patch renderChatMessage to also feed the preview
+    var _origRenderChat = renderChatMessage;
+    renderChatMessage = function (msg) {
+        _origRenderChat(msg);
+        addToLobbyPreview(msg);
+    };
+
+    // Update preview online count when presence changes
+    var _origPresenceCb = null;
+
+    // Tap lobby preview -> switch to chat tab
+    if (lobbyPreviewTap) {
+        lobbyPreviewTap.addEventListener('click', function () {
+            var chatTab = document.querySelector('.mobile-tab[data-tab="chat"]');
+            if (chatTab) chatTab.click();
+        });
+    }
+
+    // --- Drag handle to resize lobby preview ---
+
+    if (lobbyHandle) {
+        var isDragging = false;
+        var startY = 0;
+        var startHeight = 0;
+        var minHeight = 80;
+        var maxHeight = 400;
+
+        function onDragStart(y) {
+            isDragging = true;
+            startY = y;
+            startHeight = lobbyPreview.offsetHeight;
+            lobbyPreview.style.transition = 'none';
+        }
+
+        function onDragMove(y) {
+            if (!isDragging) return;
+            var delta = startY - y;
+            var newHeight = Math.min(maxHeight, Math.max(minHeight, startHeight + delta));
+            lobbyPreview.style.height = newHeight + 'px';
+        }
+
+        function onDragEnd() {
+            isDragging = false;
+            lobbyPreview.style.transition = '';
+        }
+
+        // Touch events
+        lobbyHandle.addEventListener('touchstart', function (e) {
+            onDragStart(e.touches[0].clientY);
+        }, { passive: true });
+        document.addEventListener('touchmove', function (e) {
+            if (isDragging) onDragMove(e.touches[0].clientY);
+        }, { passive: true });
+        document.addEventListener('touchend', onDragEnd);
+
+        // Mouse events (for testing on desktop)
+        lobbyHandle.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            onDragStart(e.clientY);
+        });
+        document.addEventListener('mousemove', function (e) {
+            if (isDragging) onDragMove(e.clientY);
+        });
+        document.addEventListener('mouseup', onDragEnd);
+    }
+
+    // Update preview online count from presence
+    if (previewOnlineCount) {
+        var origInit = Chat.init;
+        Chat.init = function (config, callbacks) {
+            var origPresence = callbacks.onPresence;
+            callbacks.onPresence = function (users) {
+                if (origPresence) origPresence(users);
+                previewOnlineCount.textContent = users.length;
+            };
+            origInit(config, callbacks);
+        };
+    }
+
     // --- Periodic recalculation (every 60s for decay updates) ---
 
     setInterval(function () {
