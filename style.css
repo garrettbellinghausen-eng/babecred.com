@@ -22,7 +22,11 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; overflow: hidden; }
+html, body {
+    height: 100%;
+    overflow: hidden;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
 
 body {
     font-family: 'DM Mono', monospace;
@@ -783,7 +787,7 @@ body::before {
         gap: 8px;
         padding: 10px 14px;
         background: var(--bg-dim);
-        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
     }
     .big-add-btn {
         flex: 1;
