@@ -203,7 +203,13 @@
             if (i + 1 < s) el.classList.add('done');
         });
         wizBack.textContent = s === 1 ? 'Cancel' : 'Back';
-        wizNext.textContent = s === 5 ? 'Add Entry' : 'Next';
+        // Only show Next on step 5 (as "Add Entry"). Steps 1-4 auto-advance on selection.
+        if (s === 5) {
+            wizNext.style.display = '';
+            wizNext.textContent = 'Add Entry';
+        } else {
+            wizNext.style.display = 'none';
+        }
 
         if (s === 1) renderWizType();
         if (s === 2) renderWizCategories();
@@ -218,8 +224,8 @@
         var witBtn = document.getElementById('wiz-type-wit');
         depBtn.classList.toggle('selected', wizState.type === 'deposit');
         witBtn.classList.toggle('selected', wizState.type === 'withdrawal');
-        depBtn.onclick = function () { wizState.type = 'deposit'; renderWizType(); };
-        witBtn.onclick = function () { wizState.type = 'withdrawal'; renderWizType(); };
+        depBtn.onclick = function () { wizState.type = 'deposit'; wizState.step = 2; renderWizardStep(); };
+        witBtn.onclick = function () { wizState.type = 'withdrawal'; wizState.step = 2; renderWizardStep(); };
     }
 
     // Step 2: Category
@@ -237,7 +243,8 @@
                 wizState.cat = c.id;
                 wizState.catEmoji = c.emoji;
                 wizState.catName = c.name;
-                renderWizCategories();
+                wizState.step = 3;
+                renderWizardStep();
             });
             wizCategories.appendChild(el);
         });
@@ -259,7 +266,8 @@
             el.addEventListener('click', function () {
                 wizState.effort = i;
                 wizState.effortData = o;
-                renderWizEffort();
+                wizState.step = 4;
+                renderWizardStep();
             });
             wizEffort.appendChild(el);
         });
@@ -280,7 +288,8 @@
             el.addEventListener('click', function () {
                 wizState.modifier = i;
                 wizState.modData = o;
-                renderWizModifier();
+                wizState.step = 5;
+                renderWizardStep();
             });
             wizModifier.appendChild(el);
         });
@@ -358,30 +367,21 @@
     });
 
     wizNext.addEventListener('click', function () {
-        if (wizState.step === 1 && wizState.type === null) return;
-        if (wizState.step === 2 && wizState.cat === null) return;
-        if (wizState.step === 3 && wizState.effort === null) return;
-        if (wizState.step === 4 && wizState.modifier === null) return;
-        if (wizState.step === 5 && wizState.when === null) return;
-        if (wizState.step === 5 && wizState.when === 'custom' && !wizState.whenDate) return;
+        // Only fires on step 5 (Add Entry)
+        if (wizState.when === null) return;
+        if (wizState.when === 'custom' && !wizState.whenDate) return;
 
-        if (wizState.step < 5) {
-            wizState.step++;
-            renderWizardStep();
+        var val = calcWizValue();
+        var desc = wizDesc.value.trim() || wizState.catName;
+        var emoji = wizState.catEmoji || '✏️';
+        var ts = getWizTimestamp();
+        if (wizState.type === 'deposit') {
+            CredEngine.addDepositAt(desc, emoji, Math.abs(val), wizState.effortData.halfLife, ts);
         } else {
-            // Submit
-            var val = calcWizValue();
-            var desc = wizDesc.value.trim() || wizState.catName;
-            var emoji = wizState.catEmoji || '✏️';
-            var ts = getWizTimestamp();
-            if (wizState.type === 'deposit') {
-                CredEngine.addDepositAt(desc, emoji, Math.abs(val), wizState.effortData.halfLife, ts);
-            } else {
-                CredEngine.addWithdrawalAt(desc, emoji, val, wizState.effortData.rate || 2, ts);
-            }
-            customModal.classList.add('hidden');
-            renderAll();
+            CredEngine.addWithdrawalAt(desc, emoji, val, wizState.effortData.rate || 2, ts);
         }
+        customModal.classList.add('hidden');
+        renderAll();
     });
 
     // --- Ledger ---
