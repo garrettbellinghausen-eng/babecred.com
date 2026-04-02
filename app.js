@@ -5,14 +5,14 @@
     // --- Helpers ---
 
     function sanitize(str) {
-        const el = document.createElement('div');
+        var el = document.createElement('div');
         el.textContent = str;
         return el.innerHTML;
     }
 
     function getNameColor(name) {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
+        var hash = 0;
+        for (var i = 0; i < name.length; i++) {
             hash = name.charCodeAt(i) + ((hash << 5) - hash);
         }
         return Math.abs(hash) % 10;
@@ -23,82 +23,67 @@
     }
 
     function formatDate(ts) {
-        const d = new Date(ts);
-        const now = new Date();
-        const diff = now - d;
-        if (diff < 86400000 && d.getDate() === now.getDate()) {
-            return 'Today, ' + formatTime(ts);
-        }
-        if (diff < 172800000) {
-            return 'Yesterday, ' + formatTime(ts);
-        }
+        var d = new Date(ts);
+        var now = new Date();
+        var diff = now - d;
+        if (diff < 86400000 && d.getDate() === now.getDate()) return 'Today, ' + formatTime(ts);
+        if (diff < 172800000) return 'Yesterday, ' + formatTime(ts);
         return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
     function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
         return match ? decodeURIComponent(match[2]) : null;
     }
 
     function setCookie(name, value, days) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        var expires = new Date(Date.now() + days * 864e5).toUTCString();
         document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
     }
 
     // --- State ---
-
-    let userName = '';
-    const COOKIE_NAME = 'babecred_name';
+    var userName = '';
+    var COOKIE_NAME = 'babecred_name';
 
     // --- DOM refs ---
-
-    const nameModal = document.getElementById('name-modal');
-    const nameInput = document.getElementById('name-input');
-    const nameSubmit = document.getElementById('name-submit');
-    const mainApp = document.getElementById('main-app');
-    const topbarName = document.getElementById('topbar-name');
-    const topbarBalance = document.getElementById('topbar-balance');
-    const balanceNumber = document.getElementById('balance-number');
-    const balanceSub = document.getElementById('balance-sub');
-    const quickAdds = document.getElementById('quick-adds');
-    const goalsSection = document.getElementById('goals-section');
-    const ledgerRows = document.getElementById('ledger-rows');
-    const chatMessages = document.getElementById('chat-messages');
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const chatName = document.getElementById('chat-name');
-    const onlineCount = document.getElementById('online-count');
+    var nameModal = document.getElementById('name-modal');
+    var nameInput = document.getElementById('name-input');
+    var nameSubmit = document.getElementById('name-submit');
+    var mainApp = document.getElementById('main-app');
+    var topbarName = document.getElementById('topbar-name');
+    var topbarBalance = document.getElementById('topbar-balance');
+    var balanceNumber = document.getElementById('balance-number');
+    var balanceSub = document.getElementById('balance-sub');
+    var ledgerRows = document.getElementById('ledger-rows');
+    var chatMessages = document.getElementById('chat-messages');
+    var chatForm = document.getElementById('chat-form');
+    var chatInput = document.getElementById('chat-input');
+    var chatName = document.getElementById('chat-name');
+    var onlineCount = document.getElementById('online-count');
+    var addEntryBtn = document.getElementById('add-entry-btn');
 
     // Wizard refs
-    const customModal = document.getElementById('custom-modal');
-    const customTitle = document.getElementById('custom-modal-title');
-    const wizSteps = document.querySelectorAll('#wizard-steps .wstep');
-    const wizPages = [
+    var customModal = document.getElementById('custom-modal');
+    var customTitle = document.getElementById('custom-modal-title');
+    var wizSteps = document.querySelectorAll('#wizard-steps .wstep');
+    var wizPages = [
         document.getElementById('wiz-step-1'),
         document.getElementById('wiz-step-2'),
         document.getElementById('wiz-step-3'),
-        document.getElementById('wiz-step-4')
+        document.getElementById('wiz-step-4'),
+        document.getElementById('wiz-step-5')
     ];
-    const wizCategories = document.getElementById('wiz-categories');
-    const wizEffort = document.getElementById('wiz-effort');
-    const wizModifier = document.getElementById('wiz-modifier');
-    const wizEstimate = document.getElementById('wiz-estimate');
-    const wizDesc = document.getElementById('wiz-desc');
-    const wizSummary = document.getElementById('wiz-summary');
-    const wizBack = document.getElementById('wiz-back');
-    const wizNext = document.getElementById('wiz-next');
-    const wizStep2Label = document.getElementById('wiz-step2-label');
-    const wizStep3Label = document.getElementById('wiz-step3-label');
-
-    // Goal modal refs
-    const goalModal = document.getElementById('goal-modal');
-    const goalName = document.getElementById('goal-name');
-    const goalDate = document.getElementById('goal-date');
-    const goalCost = document.getElementById('goal-cost');
-    const goalCancel = document.getElementById('goal-cancel');
-    const goalConfirm = document.getElementById('goal-confirm');
-
-    let customModalType = 'deposit';
+    var wizCategories = document.getElementById('wiz-categories');
+    var wizEffort = document.getElementById('wiz-effort');
+    var wizModifier = document.getElementById('wiz-modifier');
+    var wizEstimate = document.getElementById('wiz-estimate');
+    var wizDesc = document.getElementById('wiz-desc');
+    var wizSummary = document.getElementById('wiz-summary');
+    var wizBack = document.getElementById('wiz-back');
+    var wizNext = document.getElementById('wiz-next');
+    var wizStep3Label = document.getElementById('wiz-step3-label');
+    var wizStep4Label = document.getElementById('wiz-step4-label');
+    var wizDateInput = document.getElementById('wiz-date');
 
     // --- Sign on ---
 
@@ -106,10 +91,8 @@
         name = name.trim();
         if (!name) return;
         if (name.length > 24) name = name.substring(0, 24);
-
         userName = name;
         setCookie(COOKIE_NAME, name, 365);
-
         nameModal.classList.add('hidden');
         mainApp.classList.remove('hidden');
         topbarName.textContent = name;
@@ -117,20 +100,15 @@
 
         Chat.init(firebaseConfig, {
             onMessage: renderChatMessage,
-            onPresence: function (users) {
-                onlineCount.textContent = users.length;
-            }
+            onPresence: function (users) { onlineCount.textContent = users.length; }
         });
         Chat.join(name);
-
         renderAll();
         chatInput.focus();
     }
 
-    const existing = getCookie(COOKIE_NAME);
-    if (existing) {
-        signOn(existing);
-    }
+    var existing = getCookie(COOKIE_NAME);
+    if (existing) signOn(existing);
 
     nameSubmit.addEventListener('click', function () { signOn(nameInput.value); });
     nameInput.addEventListener('keydown', function (e) {
@@ -140,69 +118,26 @@
     // --- Render balance ---
 
     function renderBalance() {
-        const bal = CredEngine.calculateBalance();
-        const rounded = Math.round(bal);
-        const prefix = rounded >= 0 ? '+' : '';
-
+        var bal = CredEngine.calculateBalance();
+        var rounded = Math.round(bal);
+        var prefix = rounded >= 0 ? '+' : '';
         balanceNumber.textContent = prefix + rounded;
         balanceNumber.className = 'balance-number ' + (rounded >= 0 ? 'positive' : 'negative');
-
         topbarBalance.textContent = prefix + rounded + ' cred';
         topbarBalance.className = 'topbar-balance ' + (rounded >= 0 ? 'positive' : 'negative');
-
-        const trend = CredEngine.weeklyTrend();
-        const trendPrefix = trend.net >= 0 ? '▲' : '▼';
+        var trend = CredEngine.weeklyTrend();
+        var trendPrefix = trend.net >= 0 ? '▲' : '▼';
         balanceSub.textContent = trendPrefix + ' ' + Math.abs(Math.round(trend.net)) + ' this week';
     }
 
-    // --- Render quick adds ---
-
-    function renderQuickAdds() {
-        const deposits = CredEngine.DEPOSIT_PRESETS;
-        const withdrawals = CredEngine.WITHDRAWAL_PRESETS;
-
-        let html = '<div class="qa-label">Quick Deposits</div><div class="qa-row">';
-        for (const p of deposits) {
-            html += '<button class="qa-btn" data-preset-type="deposit" data-idx="' + deposits.indexOf(p) + '">'
-                + p.emoji + ' ' + p.desc + ' +' + p.value + '</button>';
-        }
-        html += '<button class="qa-btn custom" id="custom-deposit-btn">+ Custom</button>';
-        html += '</div>';
-
-        html += '<div class="qa-label">Quick Withdrawals</div><div class="qa-row">';
-        for (const p of withdrawals) {
-            html += '<button class="qa-btn withdraw" data-preset-type="withdrawal" data-idx="' + withdrawals.indexOf(p) + '">'
-                + p.emoji + ' ' + p.desc + ' ' + p.value + '</button>';
-        }
-        html += '<button class="qa-btn custom" id="custom-withdrawal-btn">- Custom</button>';
-        html += '</div>';
-
-        quickAdds.innerHTML = html;
-
-        quickAdds.querySelectorAll('[data-preset-type]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                const type = this.dataset.presetType;
-                const idx = parseInt(this.dataset.idx);
-                if (type === 'deposit') {
-                    const p = deposits[idx];
-                    CredEngine.addDeposit(p.desc, p.emoji, p.value, p.halfLife);
-                } else {
-                    const p = withdrawals[idx];
-                    CredEngine.addWithdrawal(p.desc, p.emoji, p.value, p.recoveryRate);
-                }
-                renderAll();
-            });
-        });
-
-        document.getElementById('custom-deposit-btn').addEventListener('click', function () {
-            openCustomModal('deposit');
-        });
-        document.getElementById('custom-withdrawal-btn').addEventListener('click', function () {
-            openCustomModal('withdrawal');
-        });
-    }
-
-    // --- Custom wizard ---
+    // =============================================
+    // ENTRY WIZARD — 5 steps
+    // 1. Deposit or Withdrawal
+    // 2. Category
+    // 3. Effort / Duration
+    // 4. Modifier (asked for? / damage level)
+    // 5. When + Description + Review
+    // =============================================
 
     var DEPOSIT_CATS = [
         { id: 'service', emoji: '🧹', name: 'Acts of Service', hint: 'Cleaning, cooking, errands, fixing' },
@@ -247,16 +182,17 @@
         { label: 'Sleeping on the couch', hint: 'You are in danger', mult: 2.0 }
     ];
 
-    var wizState = { type: 'deposit', step: 1, cat: null, effort: null, modifier: null };
+    var wizState = { type: null, step: 1, cat: null, effort: null, modifier: null, when: null, whenDate: null };
 
-    function openCustomModal(type) {
-        wizState = { type: type, step: 1, cat: null, effort: null, modifier: null };
-        customModalType = type;
-        customTitle.textContent = type === 'deposit' ? 'Custom Deposit' : 'Custom Withdrawal';
+    // Open wizard
+    addEntryBtn.addEventListener('click', function () {
+        wizState = { type: null, step: 1, cat: null, effort: null, modifier: null, when: null, whenDate: null };
+        customTitle.textContent = 'New Entry';
         wizDesc.value = '';
+        wizDateInput.classList.add('hidden');
         customModal.classList.remove('hidden');
         renderWizardStep();
-    }
+    });
 
     function renderWizardStep() {
         var s = wizState.step;
@@ -267,15 +203,28 @@
             if (i + 1 < s) el.classList.add('done');
         });
         wizBack.textContent = s === 1 ? 'Cancel' : 'Back';
-        wizNext.textContent = s === 4 ? 'Add Entry' : 'Next';
+        wizNext.textContent = s === 5 ? 'Add Entry' : 'Next';
 
-        if (s === 1) renderWizCategories();
-        if (s === 2) renderWizEffort();
-        if (s === 3) renderWizModifier();
-        if (s === 4) renderWizReview();
+        if (s === 1) renderWizType();
+        if (s === 2) renderWizCategories();
+        if (s === 3) renderWizEffort();
+        if (s === 4) renderWizModifier();
+        if (s === 5) renderWizReview();
     }
 
+    // Step 1: Deposit or Withdrawal
+    function renderWizType() {
+        var depBtn = document.getElementById('wiz-type-dep');
+        var witBtn = document.getElementById('wiz-type-wit');
+        depBtn.classList.toggle('selected', wizState.type === 'deposit');
+        witBtn.classList.toggle('selected', wizState.type === 'withdrawal');
+        depBtn.onclick = function () { wizState.type = 'deposit'; renderWizType(); };
+        witBtn.onclick = function () { wizState.type = 'withdrawal'; renderWizType(); };
+    }
+
+    // Step 2: Category
     function renderWizCategories() {
+        customTitle.textContent = wizState.type === 'deposit' ? 'Deposit' : 'Withdrawal';
         var cats = wizState.type === 'deposit' ? DEPOSIT_CATS : WITHDRAW_CATS;
         wizCategories.innerHTML = '';
         cats.forEach(function (c) {
@@ -294,9 +243,10 @@
         });
     }
 
+    // Step 3: Effort / Duration
     function renderWizEffort() {
         var opts = wizState.type === 'deposit' ? DEP_EFFORT : WIT_DURATION;
-        wizStep2Label.textContent = wizState.type === 'deposit' ? 'How much effort was this?' : 'How long is this?';
+        wizStep3Label.textContent = wizState.type === 'deposit' ? 'How much effort was this?' : 'How long is this?';
         wizEffort.innerHTML = '';
         opts.forEach(function (o, i) {
             var el = document.createElement('div');
@@ -315,9 +265,10 @@
         });
     }
 
+    // Step 4: Modifier
     function renderWizModifier() {
         var opts = wizState.type === 'deposit' ? DEP_MODIFIER : WIT_MODIFIER;
-        wizStep3Label.textContent = wizState.type === 'deposit' ? 'Was it asked for?' : 'How mad is she?';
+        wizStep4Label.textContent = wizState.type === 'deposit' ? 'Was it asked for?' : 'How mad is she?';
         wizModifier.innerHTML = '';
         opts.forEach(function (o, i) {
             var el = document.createElement('div');
@@ -340,6 +291,23 @@
         return Math.round(wizState.effortData.base * wizState.modData.mult);
     }
 
+    function getWizTimestamp() {
+        if (wizState.when === 'now') return Date.now();
+        if (wizState.when === 'today') {
+            var t = new Date(); t.setHours(t.getHours() - 4);
+            return t.getTime();
+        }
+        if (wizState.when === 'yesterday') {
+            var y = new Date(); y.setDate(y.getDate() - 1);
+            return y.getTime();
+        }
+        if (wizState.when === 'custom' && wizState.whenDate) {
+            return new Date(wizState.whenDate).getTime();
+        }
+        return Date.now();
+    }
+
+    // Step 5: When + Review
     function renderWizReview() {
         var val = calcWizValue();
         var prefix = val >= 0 ? '+' : '';
@@ -347,7 +315,27 @@
         wizEstimate.innerHTML = '<div class="wiz-est-num ' + cls + '">' + prefix + val + '</div>'
             + '<div class="wiz-est-label">estimated babe cred</div>';
 
+        // When buttons
+        var whenBtns = document.querySelectorAll('.wiz-when');
+        whenBtns.forEach(function (btn) {
+            btn.classList.toggle('selected', wizState.when === btn.dataset.when);
+            btn.onclick = function () {
+                wizState.when = this.dataset.when;
+                if (this.dataset.when === 'custom') {
+                    wizDateInput.classList.remove('hidden');
+                } else {
+                    wizDateInput.classList.add('hidden');
+                }
+                renderWizReview();
+            };
+        });
+
+        wizDateInput.onchange = function () {
+            wizState.whenDate = this.value;
+        };
+
         var lines = [];
+        lines.push('Type: ' + (wizState.type === 'deposit' ? '+ Deposit' : '− Withdrawal'));
         lines.push('Category: ' + (wizState.catEmoji || '') + ' ' + (wizState.catName || ''));
         lines.push('Effort: ' + (wizState.effortData ? wizState.effortData.label : ''));
         lines.push('Modifier: ' + (wizState.modData ? wizState.modData.label + ' (' + wizState.modData.mult + 'x)' : ''));
@@ -359,6 +347,7 @@
         wizSummary.innerHTML = lines.join('<br>');
     }
 
+    // Navigation
     wizBack.addEventListener('click', function () {
         if (wizState.step === 1) {
             customModal.classList.add('hidden');
@@ -369,11 +358,14 @@
     });
 
     wizNext.addEventListener('click', function () {
-        if (wizState.step === 1 && wizState.cat === null) return;
-        if (wizState.step === 2 && wizState.effort === null) return;
-        if (wizState.step === 3 && wizState.modifier === null) return;
+        if (wizState.step === 1 && wizState.type === null) return;
+        if (wizState.step === 2 && wizState.cat === null) return;
+        if (wizState.step === 3 && wizState.effort === null) return;
+        if (wizState.step === 4 && wizState.modifier === null) return;
+        if (wizState.step === 5 && wizState.when === null) return;
+        if (wizState.step === 5 && wizState.when === 'custom' && !wizState.whenDate) return;
 
-        if (wizState.step < 4) {
+        if (wizState.step < 5) {
             wizState.step++;
             renderWizardStep();
         } else {
@@ -381,91 +373,31 @@
             var val = calcWizValue();
             var desc = wizDesc.value.trim() || wizState.catName;
             var emoji = wizState.catEmoji || '✏️';
+            var ts = getWizTimestamp();
             if (wizState.type === 'deposit') {
-                CredEngine.addDeposit(desc, emoji, Math.abs(val), wizState.effortData.halfLife);
+                CredEngine.addDepositAt(desc, emoji, Math.abs(val), wizState.effortData.halfLife, ts);
             } else {
-                CredEngine.addWithdrawal(desc, emoji, val, wizState.effortData.rate || 2);
+                CredEngine.addWithdrawalAt(desc, emoji, val, wizState.effortData.rate || 2, ts);
             }
             customModal.classList.add('hidden');
             renderAll();
         }
     });
 
-    // --- Goal planner ---
-
-    function renderGoals() {
-        const goals = CredEngine.getGoalsWithStatus();
-
-        let html = '<div class="goals-header"><span class="goals-title">🎯 Goal Planner</span>'
-            + '<button class="goal-add-btn" id="goal-add-btn">+ Add Goal</button></div>';
-
-        if (goals.length === 0) {
-            html += '<div class="goals-empty">No goals set. Plan ahead for big withdrawals.</div>';
-        } else {
-            for (const g of goals) {
-                const pct = Math.round(g.progress * 100);
-                const eventDate = new Date(g.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                html += '<div class="goal-item">'
-                    + '<div class="goal-top">'
-                    + '<span class="goal-name">' + sanitize(g.name) + ' (' + g.cost + ')</span>'
-                    + '<span class="goal-date-info">' + eventDate + ' · ' + g.daysAway + ' days</span>'
-                    + '</div>'
-                    + '<div class="goal-bar"><div class="goal-fill" style="width:' + pct + '%"></div>'
-                    + '<span class="goal-bar-text">' + g.credNeeded + ' cred to go</span></div>'
-                    + '<div class="goal-stats">'
-                    + '<span>~' + g.dailyPace + ' cred/day needed</span>'
-                    + '<button class="goal-delete" data-goal-id="' + g.id + '">remove</button>'
-                    + '</div></div>';
-            }
-        }
-
-        goalsSection.innerHTML = html;
-
-        document.getElementById('goal-add-btn').addEventListener('click', function () {
-            goalName.value = '';
-            goalDate.value = '';
-            goalCost.value = '';
-            goalModal.classList.remove('hidden');
-            goalName.focus();
-        });
-
-        goalsSection.querySelectorAll('.goal-delete').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                CredEngine.deleteGoal(this.dataset.goalId);
-                renderAll();
-            });
-        });
-    }
-
-    goalCancel.addEventListener('click', function () {
-        goalModal.classList.add('hidden');
-    });
-
-    goalConfirm.addEventListener('click', function () {
-        const name = goalName.value.trim();
-        const date = goalDate.value;
-        const cost = parseInt(goalCost.value);
-        if (!name || !date || !cost || cost < 1) return;
-        CredEngine.addGoal(name, date, cost);
-        goalModal.classList.add('hidden');
-        renderAll();
-    });
-
     // --- Ledger ---
 
     function renderLedger() {
-        const entries = CredEngine.getLedgerWithValues();
-
+        var entries = CredEngine.getLedgerWithValues();
         if (entries.length === 0) {
-            ledgerRows.innerHTML = '<div class="ledger-empty">No transactions yet. Start earning cred.</div>';
+            ledgerRows.innerHTML = '<div class="ledger-empty">No transactions yet. Tap + Add Entry to start.</div>';
             return;
         }
-
-        let html = '';
-        for (const e of entries) {
-            const isPos = e.currentValue >= 0;
-            const prefix = isPos ? '+' : '';
-            const origPrefix = e.value >= 0 ? '+' : '';
+        var html = '';
+        for (var i = 0; i < entries.length; i++) {
+            var e = entries[i];
+            var isPos = e.currentValue >= 0;
+            var prefix = isPos ? '+' : '';
+            var origPrefix = e.value >= 0 ? '+' : '';
             html += '<div class="ledger-swipe" data-entry-id="' + e.id + '">'
                 + '<div class="ledger-row">'
                 + '<div class="lr-left">'
@@ -480,7 +412,6 @@
                 + '<div class="lr-delete">Delete</div>'
                 + '</div>';
         }
-
         ledgerRows.innerHTML = html;
         bindSwipeToDelete();
     }
@@ -490,70 +421,43 @@
     function bindSwipeToDelete() {
         var rows = ledgerRows.querySelectorAll('.ledger-swipe');
         rows.forEach(function (row) {
-            var startX = 0;
-            var currentX = 0;
-            var swiping = false;
+            var startX = 0, currentX = 0, swiping = false;
             var rowInner = row.querySelector('.ledger-row');
             var deleteBtn = row.querySelector('.lr-delete');
             var threshold = 70;
 
-            function onStart(x) {
-                swiping = true;
-                startX = x;
-                currentX = 0;
-                rowInner.style.transition = 'none';
-            }
-
+            function onStart(x) { swiping = true; startX = x; currentX = 0; rowInner.style.transition = 'none'; }
             function onMove(x) {
                 if (!swiping) return;
                 currentX = Math.min(0, x - startX);
                 if (currentX < -threshold) currentX = -threshold - (currentX + threshold) * 0.2;
                 rowInner.style.transform = 'translateX(' + currentX + 'px)';
             }
-
             function onEnd() {
                 if (!swiping) return;
                 swiping = false;
                 rowInner.style.transition = 'transform 0.2s ease';
                 if (currentX < -threshold * 0.6) {
                     rowInner.style.transform = 'translateX(-' + threshold + 'px)';
-                    row.classList.add('swiped');
                 } else {
                     rowInner.style.transform = 'translateX(0)';
-                    row.classList.remove('swiped');
                 }
             }
 
-            // Touch
-            rowInner.addEventListener('touchstart', function (e) {
-                onStart(e.touches[0].clientX);
-            }, { passive: true });
-            rowInner.addEventListener('touchmove', function (e) {
-                onMove(e.touches[0].clientX);
-            }, { passive: true });
+            rowInner.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX); }, { passive: true });
+            rowInner.addEventListener('touchmove', function (e) { onMove(e.touches[0].clientX); }, { passive: true });
             rowInner.addEventListener('touchend', onEnd);
-
-            // Mouse
-            rowInner.addEventListener('mousedown', function (e) {
-                e.preventDefault();
-                onStart(e.clientX);
-            });
-            document.addEventListener('mousemove', function (e) {
-                onMove(e.clientX);
-            });
+            rowInner.addEventListener('mousedown', function (e) { e.preventDefault(); onStart(e.clientX); });
+            document.addEventListener('mousemove', function (e) { onMove(e.clientX); });
             document.addEventListener('mouseup', onEnd);
 
-            // Delete button
             deleteBtn.addEventListener('click', function () {
                 var id = row.dataset.entryId;
                 row.style.transition = 'opacity 0.2s, max-height 0.2s';
                 row.style.opacity = '0';
                 row.style.maxHeight = '0';
                 row.style.overflow = 'hidden';
-                setTimeout(function () {
-                    CredEngine.deleteEntry(id);
-                    renderAll();
-                }, 200);
+                setTimeout(function () { CredEngine.deleteEntry(id); renderAll(); }, 200);
             });
         });
     }
@@ -571,23 +475,21 @@
     }
 
     function renderChatMessage(msg) {
-        const el = document.createElement('div');
+        var el = document.createElement('div');
         el.className = 'chat-msg';
-        const c = getNameColor(msg.name);
-        const t = msg.timestamp ? formatTime(msg.timestamp) : '';
+        var c = getNameColor(msg.name);
+        var t = msg.timestamp ? formatTime(msg.timestamp) : '';
         var balTag = '';
         if (msg.balance !== undefined) {
-            const emoji = balEmoji(msg.balance);
-            const cls = msg.balance >= 0 ? 'pos' : 'neg';
-            const prefix = msg.balance >= 0 ? '+' : '';
-            balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + prefix + msg.balance + ']</span>';
+            var emoji = balEmoji(msg.balance);
+            var cls = msg.balance >= 0 ? 'pos' : 'neg';
+            var pfx = msg.balance >= 0 ? '+' : '';
+            balTag = ' <span class="cm-bal ' + cls + '">' + emoji + '[' + pfx + msg.balance + ']</span>';
         }
         el.innerHTML = '<span class="cm-time">' + sanitize(t) + '</span>'
             + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
-            + balTag + ': '
-            + sanitize(msg.text);
+            + balTag + ': ' + sanitize(msg.text);
         chatMessages.appendChild(el);
-
         if (chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 120) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -595,7 +497,7 @@
 
     chatForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        const text = chatInput.value.trim();
+        var text = chatInput.value.trim();
         if (!text || !userName) return;
         Chat.send(userName, text, Math.round(CredEngine.calculateBalance()));
         chatInput.value = '';
@@ -606,30 +508,22 @@
 
     function renderAll() {
         renderBalance();
-        renderGoals();
         renderLedger();
     }
 
-    renderQuickAdds();
-
     // --- Mobile tab switching ---
 
-    const mobileTabs = document.getElementById('mobile-tabs');
-    const balanceSide = document.querySelector('.balance-side');
-    const chatSide = document.querySelector('.chat-side');
+    var mobileTabs = document.getElementById('mobile-tabs');
+    var balanceSide = document.querySelector('.balance-side');
+    var chatSide = document.querySelector('.chat-side');
 
     if (mobileTabs) {
         mobileTabs.addEventListener('click', function (e) {
-            const tab = e.target.closest('.mobile-tab');
+            var tab = e.target.closest('.mobile-tab');
             if (!tab) return;
-            const target = tab.dataset.tab;
-
-            mobileTabs.querySelectorAll('.mobile-tab').forEach(function (t) {
-                t.classList.remove('active');
-            });
+            mobileTabs.querySelectorAll('.mobile-tab').forEach(function (t) { t.classList.remove('active'); });
             tab.classList.add('active');
-
-            if (target === 'cred') {
+            if (tab.dataset.tab === 'cred') {
                 balanceSide.classList.remove('mobile-hidden');
                 chatSide.classList.add('mobile-hidden');
             } else {
@@ -638,86 +532,13 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         });
-
-        // Default: show cred tab, hide chat on mobile
-        if (window.innerWidth <= 768) {
-            chatSide.classList.add('mobile-hidden');
-        }
-    }
-
-    // --- Mobile: Big Add Buttons + Emoji Grid ---
-
-    var mobileAddGrid = document.getElementById('mobile-add-grid');
-    var mobileDepBtn = document.getElementById('mobile-dep-btn');
-    var mobileWitBtn = document.getElementById('mobile-wit-btn');
-    var mobileGridMode = null; // 'deposit' or 'withdrawal' or null
-
-    function renderMobileGrid(type) {
-        if (mobileGridMode === type) {
-            // Toggle off
-            mobileGridMode = null;
-            mobileAddGrid.innerHTML = '';
-            mobileDepBtn.classList.remove('active');
-            mobileWitBtn.classList.remove('active');
-            return;
-        }
-        mobileGridMode = type;
-        mobileDepBtn.classList.toggle('active', type === 'deposit');
-        mobileWitBtn.classList.toggle('active', type === 'withdrawal');
-
-        var presets = type === 'deposit' ? CredEngine.DEPOSIT_PRESETS : CredEngine.WITHDRAWAL_PRESETS;
-        var html = '';
-        presets.forEach(function (p, i) {
-            var valCls = type === 'deposit' ? 'pos' : 'neg';
-            var prefix = p.value >= 0 ? '+' : '';
-            html += '<div class="mag-item" data-type="' + type + '" data-idx="' + i + '">'
-                + '<div class="mag-emoji">' + p.emoji + '</div>'
-                + '<div class="mag-name">' + p.desc + '</div>'
-                + '<div class="mag-val ' + valCls + '">' + prefix + p.value + '</div>'
-                + '</div>';
-        });
-        html += '<div class="mag-item custom-item" data-type="' + type + '" data-idx="custom">'
-            + '<div class="mag-emoji">✏️</div>'
-            + '<div class="mag-name">Custom</div>'
-            + '<div class="mag-val">?</div>'
-            + '</div>';
-        mobileAddGrid.innerHTML = html;
-
-        mobileAddGrid.querySelectorAll('.mag-item').forEach(function (item) {
-            item.addEventListener('click', function () {
-                var idx = this.dataset.idx;
-                var t = this.dataset.type;
-                if (idx === 'custom') {
-                    openCustomModal(t);
-                } else {
-                    var p = (t === 'deposit' ? CredEngine.DEPOSIT_PRESETS : CredEngine.WITHDRAWAL_PRESETS)[parseInt(idx)];
-                    if (t === 'deposit') {
-                        CredEngine.addDeposit(p.desc, p.emoji, p.value, p.halfLife);
-                    } else {
-                        CredEngine.addWithdrawal(p.desc, p.emoji, p.value, p.recoveryRate);
-                    }
-                    renderAll();
-                    // Brief flash
-                    item.style.background = 'rgba(232,163,23,0.2)';
-                    setTimeout(function () { item.style.background = ''; }, 300);
-                }
-            });
-        });
-    }
-
-    if (mobileDepBtn) {
-        mobileDepBtn.addEventListener('click', function () { renderMobileGrid('deposit'); });
-    }
-    if (mobileWitBtn) {
-        mobileWitBtn.addEventListener('click', function () { renderMobileGrid('withdrawal'); });
+        if (window.innerWidth <= 768) chatSide.classList.add('mobile-hidden');
     }
 
     // --- Periodic recalculation (every 60s for decay updates) ---
 
     setInterval(function () {
-        if (!mainApp.classList.contains('hidden')) {
-            renderAll();
-        }
+        if (!mainApp.classList.contains('hidden')) renderAll();
     }, 60000);
 
 })();

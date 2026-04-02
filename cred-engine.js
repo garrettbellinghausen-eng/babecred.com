@@ -100,6 +100,10 @@ const CredEngine = (function () {
     // --- Ledger Operations ---
 
     function addDeposit(desc, emoji, value, halfLife) {
+        addDepositAt(desc, emoji, value, halfLife, Date.now());
+    }
+
+    function addDepositAt(desc, emoji, value, halfLife, timestamp) {
         const ledger = loadLedger();
         ledger.push({
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -108,12 +112,16 @@ const CredEngine = (function () {
             emoji: emoji,
             value: value,
             halfLife: halfLife,
-            timestamp: Date.now()
+            timestamp: timestamp
         });
         saveLedger(ledger);
     }
 
     function addWithdrawal(desc, emoji, value, recoveryRate) {
+        addWithdrawalAt(desc, emoji, value, recoveryRate, Date.now());
+    }
+
+    function addWithdrawalAt(desc, emoji, value, recoveryRate, timestamp) {
         const ledger = loadLedger();
         ledger.push({
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -122,7 +130,7 @@ const CredEngine = (function () {
             emoji: emoji,
             value: value,
             recoveryRate: recoveryRate || 2,
-            timestamp: Date.now()
+            timestamp: timestamp
         });
         saveLedger(ledger);
     }
@@ -236,7 +244,9 @@ const CredEngine = (function () {
         DEPOSIT_PRESETS,
         WITHDRAWAL_PRESETS,
         addDeposit,
+        addDepositAt,
         addWithdrawal,
+        addWithdrawalAt,
         deleteEntry,
         calculateBalance,
         calculateBalanceAtDate,

@@ -57,17 +57,8 @@
                     <div class="balance-sub" id="balance-sub"></div>
                 </div>
 
-                <div class="quick-adds" id="quick-adds">
-                </div>
-
-                <!-- MOBILE: Big Add Buttons (hidden on desktop) -->
-                <div class="mobile-add-btns" id="mobile-add-btns">
-                    <button class="big-add-btn dep" id="mobile-dep-btn">+ Deposit</button>
-                    <button class="big-add-btn wit" id="mobile-wit-btn">− Withdraw</button>
-                </div>
-                <div class="mobile-add-grid" id="mobile-add-grid"></div>
-
-                <div class="goals-section" id="goals-section">
+                <div class="add-entry-bar">
+                    <button class="add-entry-btn" id="add-entry-btn">+ Add Entry</button>
                 </div>
 
                 <div class="ledger" id="ledger">
@@ -105,41 +96,59 @@
         </footer>
     </div>
 
-    <!-- CUSTOM ENTRY WIZARD -->
+    <!-- ENTRY WIZARD -->
     <div id="custom-modal" class="modal-overlay hidden">
         <div class="modal modal-wizard">
             <div class="wizard-header">
-                <div class="modal-custom-title" id="custom-modal-title">Custom Deposit</div>
+                <div class="modal-custom-title" id="custom-modal-title">New Entry</div>
                 <div class="wizard-steps" id="wizard-steps">
                     <span class="wstep active">1</span>
                     <span class="wstep">2</span>
                     <span class="wstep">3</span>
                     <span class="wstep">4</span>
+                    <span class="wstep">5</span>
                 </div>
             </div>
 
-            <!-- Step 1: Category -->
+            <!-- Step 1: Deposit or Withdrawal -->
             <div class="wizard-page" id="wiz-step-1">
+                <label class="wiz-label">What are you logging?</label>
+                <div class="wiz-type-btns">
+                    <button class="wiz-type-btn dep" id="wiz-type-dep">+ Deposit<span class="wiz-type-hint">Something nice for her</span></button>
+                    <button class="wiz-type-btn wit" id="wiz-type-wit">− Withdrawal<span class="wiz-type-hint">Something she won't love</span></button>
+                </div>
+            </div>
+
+            <!-- Step 2: Category -->
+            <div class="wizard-page hidden" id="wiz-step-2">
                 <label class="wiz-label">What kind of thing is this?</label>
                 <div class="wiz-cat-grid" id="wiz-categories"></div>
             </div>
 
-            <!-- Step 2: Effort / Duration -->
-            <div class="wizard-page hidden" id="wiz-step-2">
-                <label class="wiz-label" id="wiz-step2-label">How much effort?</label>
+            <!-- Step 3: Effort / Duration -->
+            <div class="wizard-page hidden" id="wiz-step-3">
+                <label class="wiz-label" id="wiz-step3-label">How much effort?</label>
                 <div class="wiz-option-list" id="wiz-effort"></div>
             </div>
 
-            <!-- Step 3: Was it asked for? / Damage level -->
-            <div class="wizard-page hidden" id="wiz-step-3">
-                <label class="wiz-label" id="wiz-step3-label">Was it asked for?</label>
+            <!-- Step 4: Modifier -->
+            <div class="wizard-page hidden" id="wiz-step-4">
+                <label class="wiz-label" id="wiz-step4-label">Was it asked for?</label>
                 <div class="wiz-option-list" id="wiz-modifier"></div>
             </div>
 
-            <!-- Step 4: Description + Review -->
-            <div class="wizard-page hidden" id="wiz-step-4">
+            <!-- Step 5: When + Description + Review -->
+            <div class="wizard-page hidden" id="wiz-step-5">
                 <div class="wiz-estimate" id="wiz-estimate"></div>
-                <label class="wiz-label">Describe it (optional):</label>
+                <label class="wiz-label">When did this happen?</label>
+                <div class="wiz-when-btns" id="wiz-when-btns">
+                    <button class="wiz-when" data-when="now">Just now</button>
+                    <button class="wiz-when" data-when="today">Earlier today</button>
+                    <button class="wiz-when" data-when="yesterday">Yesterday</button>
+                    <button class="wiz-when" data-when="custom">Pick a date</button>
+                </div>
+                <input type="date" id="wiz-date" class="hidden">
+                <label class="wiz-label" style="margin-top:10px;">Describe it (optional):</label>
                 <input type="text" id="wiz-desc" maxlength="60" placeholder="e.g. Fixed the leaky faucet" autocomplete="off">
                 <div class="wiz-summary" id="wiz-summary"></div>
             </div>
@@ -147,23 +156,6 @@
             <div class="modal-custom-btns">
                 <button id="wiz-back" class="btn-secondary">Back</button>
                 <button id="wiz-next" class="btn-primary">Next</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- GOAL MODAL -->
-    <div id="goal-modal" class="modal-overlay hidden">
-        <div class="modal modal-custom">
-            <div class="modal-custom-title">Plan a Withdrawal</div>
-            <label for="goal-name">What's the event?</label>
-            <input type="text" id="goal-name" maxlength="40" placeholder="e.g. Fantasy Draft Weekend" autocomplete="off">
-            <label for="goal-date">When is it?</label>
-            <input type="date" id="goal-date">
-            <label for="goal-cost">How much cred will it cost?</label>
-            <input type="number" id="goal-cost" min="1" max="500" placeholder="80">
-            <div class="modal-custom-btns">
-                <button id="goal-cancel" class="btn-secondary">Cancel</button>
-                <button id="goal-confirm" class="btn-primary">Set Goal</button>
             </div>
         </div>
     </div>

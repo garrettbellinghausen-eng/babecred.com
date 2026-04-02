@@ -271,9 +271,81 @@ body::before {
     border-radius: 4px;
 }
 
-/* Mobile add buttons - hidden on desktop */
-.mobile-add-btns { display: none; }
-.mobile-add-grid { display: none; }
+/* Add entry button */
+.add-entry-bar {
+    padding: 10px 14px;
+    background: var(--bg-dim);
+    border-bottom: 1px solid var(--border);
+}
+.add-entry-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--mustard);
+    border: none;
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--black);
+    cursor: pointer;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+    transition: background 0.15s;
+}
+.add-entry-btn:hover { background: var(--burnt); color: var(--cream); }
+
+/* Wizard type selection (step 1) */
+.wiz-type-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.wiz-type-btn {
+    padding: 16px;
+    border: 2px solid;
+    border-radius: 6px;
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    background: #fff;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.wiz-type-btn.dep { border-color: var(--green); color: var(--green); }
+.wiz-type-btn.dep:hover, .wiz-type-btn.dep.selected { background: rgba(0,136,68,0.1); }
+.wiz-type-btn.wit { border-color: var(--burnt); color: var(--burnt); }
+.wiz-type-btn.wit:hover, .wiz-type-btn.wit.selected { background: rgba(204,85,0,0.1); }
+.wiz-type-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+/* When buttons */
+.wiz-when-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.wiz-when {
+    padding: 8px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+}
+.wiz-when:hover { border-color: var(--mustard); }
+.wiz-when.selected { border-color: var(--mustard); background: rgba(232,163,23,0.1); }
 
 .topbar {
     background: var(--black);
