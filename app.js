@@ -372,6 +372,7 @@
                 wizState.when = this.dataset.when;
                 if (this.dataset.when === 'custom') {
                     wizDateInput.classList.remove('hidden');
+                    try { wizDateInput.showPicker(); } catch (e) { wizDateInput.focus(); }
                 } else {
                     wizDateInput.classList.add('hidden');
                 }
