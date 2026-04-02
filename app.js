@@ -46,9 +46,10 @@
     var COOKIE_NAME = 'babecred_name';
 
     // --- DOM refs ---
-    var nameModal = document.getElementById('name-modal');
+    var onboarding = document.getElementById('onboarding');
     var nameInput = document.getElementById('name-input');
     var nameSubmit = document.getElementById('name-submit');
+    var anonSubmit = document.getElementById('anon-submit');
     var mainApp = document.getElementById('main-app');
     var topbarName = document.getElementById('topbar-name');
     var topbarBalance = document.getElementById('topbar-balance');
@@ -85,15 +86,36 @@
     var wizStep4Label = document.getElementById('wiz-step4-label');
     var wizDateInput = document.getElementById('wiz-date');
 
+    // --- Onboarding page navigation ---
+
+    var obPages = [
+        document.getElementById('ob-page-1'),
+        document.getElementById('ob-page-2'),
+        document.getElementById('ob-page-3'),
+        document.getElementById('ob-page-4')
+    ];
+
+    function showObPage(n) {
+        obPages.forEach(function (p) { p.classList.add('hidden'); });
+        obPages[n].classList.remove('hidden');
+    }
+
+    document.getElementById('ob-next-1').addEventListener('click', function () { showObPage(1); });
+    document.getElementById('ob-next-2').addEventListener('click', function () { showObPage(2); });
+    document.getElementById('ob-next-3').addEventListener('click', function () { showObPage(3); });
+
     // --- Sign on ---
 
-    function signOn(name) {
+    var isAnon = false;
+
+    function signOn(name, anonymous) {
         name = name.trim();
         if (!name) return;
         if (name.length > 24) name = name.substring(0, 24);
         userName = name;
-        setCookie(COOKIE_NAME, name, 365);
-        nameModal.classList.add('hidden');
+        isAnon = !!anonymous;
+        if (!isAnon) setCookie(COOKIE_NAME, name, 365);
+        onboarding.classList.add('hidden');
         mainApp.classList.remove('hidden');
         topbarName.textContent = name;
         chatName.textContent = name;
@@ -117,12 +139,16 @@
     var commentInsight = document.getElementById('comment-insight');
     var saItems = document.getElementById('sa-items');
 
+    // Auto sign-on if cookie exists (skip onboarding)
     var existing = getCookie(COOKIE_NAME);
     if (existing) signOn(existing);
 
     nameSubmit.addEventListener('click', function () { signOn(nameInput.value); });
     nameInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); signOn(nameInput.value); }
+    });
+    anonSubmit.addEventListener('click', function () {
+        signOn('Anonymous_' + Math.floor(Math.random() * 9999), true);
     });
 
     function renderBalance() {

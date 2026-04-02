@@ -46,6 +46,229 @@ body::before {
 
 .hidden { display: none !important; }
 
+/* ============================================
+   ONBOARDING
+   ============================================ */
+
+.onboarding {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--cream);
+    z-index: 2000;
+    overflow-y: auto;
+}
+
+.ob-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    animation: obFadeIn 0.4s ease-out;
+}
+
+@keyframes obFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ob-content {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+
+.ob-logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+}
+.ob-logo-sm {
+    width: 70px;
+    height: 70px;
+}
+
+.ob-title {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 42px;
+    color: var(--brown);
+}
+.ob-title span { color: var(--mustard); }
+
+.ob-tagline {
+    font-size: 13px;
+    color: var(--olive);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    font-style: italic;
+}
+
+.ob-divider {
+    width: 40px;
+    height: 3px;
+    background: var(--mustard);
+    margin: 24px auto;
+    border-radius: 2px;
+}
+
+.ob-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--brown);
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.ob-highlight {
+    background: rgba(232,163,23,0.1);
+    padding: 12px 16px;
+    border-left: 3px solid var(--mustard);
+    border-radius: 0 4px 4px 0;
+    margin-top: 20px;
+}
+
+.ob-section-title {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--brown);
+    margin-bottom: 20px;
+}
+
+.ob-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ob-card {
+    text-align: left;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+.ob-card-green { background: rgba(0,136,68,0.05); border-color: rgba(0,136,68,0.2); }
+.ob-card-red { background: rgba(204,85,0,0.05); border-color: rgba(204,85,0,0.2); }
+.ob-card-icon { font-size: 24px; margin-bottom: 6px; }
+.ob-card-title {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--brown);
+    margin-bottom: 6px;
+}
+.ob-card-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--olive);
+}
+
+.ob-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+.ob-feature {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.ob-feature-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.ob-feature strong {
+    font-size: 13px;
+    color: var(--brown);
+    display: block;
+    margin-bottom: 2px;
+}
+.ob-feature p {
+    font-size: 11px;
+    color: var(--olive);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.ob-next-btn {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    background: var(--mustard);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+.ob-next-btn:hover { background: var(--burnt); color: var(--cream); }
+
+.ob-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--border);
+    background: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--brown);
+    outline: none;
+    margin: 16px 0 12px;
+    border-radius: 4px;
+    text-align: center;
+}
+.ob-input:focus { border-color: var(--mustard); }
+
+.ob-signin-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--mustard);
+    border: none;
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--black);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+.ob-signin-btn:hover { background: var(--burnt); color: var(--cream); }
+
+.ob-or {
+    font-size: 11px;
+    color: var(--olive);
+    margin: 12px 0;
+}
+
+.ob-anon-btn {
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: 1px solid var(--olive);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--olive);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+.ob-anon-btn:hover { border-color: var(--mustard); color: var(--mustard); }
+
+.ob-anon-warn {
+    font-size: 9px;
+    color: var(--burnt);
+    margin-top: 8px;
+    opacity: 0.7;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;

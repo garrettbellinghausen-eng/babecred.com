@@ -31,16 +31,92 @@
     <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
-    <!-- NAME MODAL -->
-    <div id="name-modal" class="modal-overlay">
-        <div class="modal">
-            <img src="logo.svg" alt="BabeCred" class="modal-logo-img">
-            <div class="modal-brand">Babe<span>Cred</span></div>
-            <p class="modal-sub">The system your relationship already runs on.</p>
-            <label for="name-input">Choose a screen name:</label>
-            <input type="text" id="name-input" maxlength="24" placeholder="xX_GoodBoyfriend_Xx" autocomplete="off">
-            <button id="name-submit">Sign On</button>
-            <p class="modal-fine">By entering you acknowledge Babe Cred as real and binding.</p>
+    <!-- ONBOARDING -->
+    <div id="onboarding" class="onboarding">
+        <!-- Page 1: Welcome -->
+        <div class="ob-page" id="ob-page-1">
+            <div class="ob-content">
+                <img src="logo.svg" alt="BabeCred" class="ob-logo">
+                <div class="ob-title">Babe<span>Cred</span></div>
+                <div class="ob-tagline">The system your relationship already runs on.</div>
+                <div class="ob-divider"></div>
+                <p class="ob-text">You know that invisible scorecard your wife or girlfriend keeps in her head? The one where flowers earn you points and "one more game" costs you?</p>
+                <p class="ob-text"><strong>That's Babe Cred.</strong> It's real. It's always been real. Now you can track it.</p>
+                <button class="ob-next-btn" id="ob-next-1">How does it work? →</button>
+            </div>
+        </div>
+
+        <!-- Page 2: How it works -->
+        <div class="ob-page hidden" id="ob-page-2">
+            <div class="ob-content">
+                <div class="ob-section-title">The System</div>
+                <div class="ob-cards">
+                    <div class="ob-card ob-card-green">
+                        <div class="ob-card-icon">📈</div>
+                        <div class="ob-card-title">Deposits</div>
+                        <div class="ob-card-text">Nice things you do earn cred. Flowers, cooking, taking out the trash without being asked. But here's the thing — <strong>deposits decay over time.</strong> Last week's flowers? She's already forgetting.</div>
+                    </div>
+                    <div class="ob-card ob-card-red">
+                        <div class="ob-card-icon">📉</div>
+                        <div class="ob-card-title">Withdrawals</div>
+                        <div class="ob-card-text">Things she hates cost cred. Gaming all night, boys' weekends, saying "you look fine." And withdrawals? <strong>They stick.</strong> She remembers. She always remembers.</div>
+                    </div>
+                </div>
+                <p class="ob-text ob-highlight">The system is rigged against you. Deposits fade. Withdrawals don't. The only way to win is to <strong>plan ahead.</strong></p>
+                <button class="ob-next-btn" id="ob-next-2">What can I do here? →</button>
+            </div>
+        </div>
+
+        <!-- Page 3: Features -->
+        <div class="ob-page hidden" id="ob-page-3">
+            <div class="ob-content">
+                <div class="ob-section-title">What You Get</div>
+                <div class="ob-features">
+                    <div class="ob-feature">
+                        <span class="ob-feature-icon">📊</span>
+                        <div>
+                            <strong>Your Balance Sheet</strong>
+                            <p>Track every deposit and withdrawal. Watch your cred decay in real-time. See where you really stand.</p>
+                        </div>
+                    </div>
+                    <div class="ob-feature">
+                        <span class="ob-feature-icon">🧠</span>
+                        <div>
+                            <strong>Smart Recommendations</strong>
+                            <p>The system tells you what to do, how deep your hole is, and how long it'll take to recover. No sugarcoating.</p>
+                        </div>
+                    </div>
+                    <div class="ob-feature">
+                        <span class="ob-feature-icon">💬</span>
+                        <div>
+                            <strong>The Lobby</strong>
+                            <p>A live chatroom with other guys in the same boat. Swap strategies. Share wins. Mourn losses.</p>
+                        </div>
+                    </div>
+                    <div class="ob-feature">
+                        <span class="ob-feature-icon">📤</span>
+                        <div>
+                            <strong>Share Your Balance</strong>
+                            <p>Generate a card with your score and send it to the group chat. Flex or cry for help.</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="ob-next-btn" id="ob-next-3">Let me in →</button>
+            </div>
+        </div>
+
+        <!-- Page 4: Sign up -->
+        <div class="ob-page hidden" id="ob-page-4">
+            <div class="ob-content">
+                <img src="logo.svg" alt="BabeCred" class="ob-logo ob-logo-sm">
+                <div class="ob-section-title">One last thing</div>
+                <p class="ob-text">Pick a screen name to save your balance and chat in The Lobby.</p>
+                <input type="text" id="name-input" maxlength="24" placeholder="xX_GoodBoyfriend_Xx" autocomplete="off" class="ob-input">
+                <button id="name-submit" class="ob-signin-btn">Sign On</button>
+                <div class="ob-or">or</div>
+                <button id="anon-submit" class="ob-anon-btn">Continue as Anonymous</button>
+                <p class="ob-anon-warn">⚠ Anonymous mode: your balance won't save when you leave.</p>
+            </div>
         </div>
     </div>
 
