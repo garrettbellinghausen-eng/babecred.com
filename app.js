@@ -111,6 +111,12 @@
         chatInput.focus();
     }
 
+    // --- Render balance ---
+
+    var commentText = document.getElementById('comment-text');
+    var commentInsight = document.getElementById('comment-insight');
+    var saItems = document.getElementById('sa-items');
+
     var existing = getCookie(COOKIE_NAME);
     if (existing) signOn(existing);
 
@@ -118,12 +124,6 @@
     nameInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); signOn(nameInput.value); }
     });
-
-    // --- Render balance ---
-
-    var commentText = document.getElementById('comment-text');
-    var commentInsight = document.getElementById('comment-insight');
-    var saItems = document.getElementById('sa-items');
 
     function renderBalance() {
         var bal = CredEngine.calculateBalance();
