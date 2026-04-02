@@ -290,6 +290,20 @@ body::before {
     margin-top: 4px;
     line-height: 1.4;
 }
+.share-btn {
+    margin-top: 8px;
+    padding: 6px 16px;
+    background: none;
+    border: 1px solid var(--olive);
+    color: var(--olive);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+.share-btn:hover { border-color: var(--mustard); color: var(--mustard); }
+.share-btn:active { background: rgba(232,163,23,0.1); }
 
 /* Suggested actions */
 .suggested-actions {

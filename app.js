@@ -545,6 +545,103 @@
         chatInput.focus();
     });
 
+    // --- Share card ---
+
+    var shareBtn = document.getElementById('share-btn');
+    shareBtn.addEventListener('click', function () {
+        var bal = Math.round(CredEngine.calculateBalance());
+        var comment = CommentEngine.getComment(bal);
+        var prefix = bal >= 0 ? '+' : '';
+
+        var canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 400;
+        var ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#1A1108';
+        ctx.fillRect(0, 0, 600, 400);
+
+        // Mustard accent bar
+        ctx.fillStyle = '#E8A317';
+        ctx.fillRect(0, 370, 600, 30);
+
+        // Logo
+        ctx.font = '900 28px Arial';
+        ctx.fillStyle = '#FFF8E7';
+        ctx.textAlign = 'center';
+        ctx.fillText('BabeCred', 300, 50);
+
+        // Balance label
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#6B6B3C';
+        ctx.letterSpacing = '2px';
+        ctx.fillText('CURRENT BABE CRED BALANCE', 300, 100);
+
+        // Big balance number
+        ctx.font = '900 80px Arial';
+        ctx.fillStyle = bal >= 0 ? '#008844' : '#CC5500';
+        ctx.fillText(prefix + bal, 300, 190);
+
+        // Emoji tier
+        var emoji = '';
+        if (bal >= 200) emoji = '👑';
+        else if (bal >= 100) emoji = '🔥';
+        else if (bal >= 50) emoji = '💪';
+        else if (bal <= -200) emoji = '💀';
+        else if (bal <= -100) emoji = '🚨';
+        else if (bal <= -50) emoji = '😬';
+        if (emoji) {
+            ctx.font = '40px Arial';
+            ctx.fillText(emoji, 300, 240);
+        }
+
+        // Comment (wrap text)
+        ctx.font = 'italic 14px Arial';
+        ctx.fillStyle = '#FFF8E7';
+        var words = comment.split(' ');
+        var line = '';
+        var y = 280;
+        for (var i = 0; i < words.length; i++) {
+            var test = line + words[i] + ' ';
+            if (ctx.measureText(test).width > 480 && i > 0) {
+                ctx.fillText('"' + (y === 280 ? '' : '') + line.trim() + (i === words.length ? '"' : ''), 300, y);
+                line = words[i] + ' ';
+                y += 20;
+            } else {
+                line = test;
+            }
+        }
+        ctx.fillText((y === 280 ? '"' : '') + line.trim() + '"', 300, y);
+
+        // URL
+        ctx.font = 'bold 12px Arial';
+        ctx.fillStyle = '#1A1108';
+        ctx.fillText('BABECRED.COM', 300, 390);
+
+        // Convert to blob and share/download
+        canvas.toBlob(function (blob) {
+            var file = new File([blob], 'babecred-balance.png', { type: 'image/png' });
+
+            // Try Web Share API (mobile)
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    title: 'My BabeCred Balance',
+                    text: 'My babe cred: ' + prefix + bal + '. ' + comment,
+                    files: [file]
+                }).catch(function () {});
+            } else {
+                // Fallback: download
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'babecred-balance.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }, 'image/png');
+    });
+
     // --- Render all ---
 
     function renderAll() {

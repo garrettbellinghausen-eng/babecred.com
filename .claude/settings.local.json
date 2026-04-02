@@ -12,7 +12,15 @@
       "Bash(gh auth:*)",
       "Bash(gh repo:*)",
       "Bash(git push:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "WebFetch(domain:babecred.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sI https://babecred.com)",
+      "Bash(curl -sk https://babecred.com)",
+      "Bash(curl -skL https://babecred.com)",
+      "Bash(curl -skL \"https://babecred.com/app.js?v=2\")",
+      "Bash(curl -skL \"https://babecred.com/comments.js?v=2\")"
     ]
   }
 }
