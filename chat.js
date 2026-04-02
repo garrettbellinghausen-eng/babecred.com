@@ -41,11 +41,12 @@ const Chat = (function () {
         myPresenceRef.onDisconnect().remove();
     }
 
-    function send(userName, text) {
+    function send(userName, text, balance) {
         if (!messagesRef) return;
         messagesRef.push({
             name: userName,
             text: text,
+            balance: balance,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         });
     }

@@ -319,8 +319,13 @@
         el.className = 'chat-msg';
         const c = getNameColor(msg.name);
         const t = msg.timestamp ? formatTime(msg.timestamp) : '';
+        const balTag = msg.balance !== undefined
+            ? ' <span class="cm-bal ' + (msg.balance >= 0 ? 'pos' : 'neg') + '">['
+            + (msg.balance >= 0 ? '+' : '') + msg.balance + ']</span>'
+            : '';
         el.innerHTML = '<span class="cm-time">' + sanitize(t) + '</span>'
-            + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + ':</span> '
+            + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
+            + balTag + ': '
             + sanitize(msg.text);
         chatMessages.appendChild(el);
 
@@ -333,7 +338,7 @@
         e.preventDefault();
         const text = chatInput.value.trim();
         if (!text || !userName) return;
-        Chat.send(userName, text);
+        Chat.send(userName, text, Math.round(CredEngine.calculateBalance()));
         chatInput.value = '';
         chatInput.focus();
     });
