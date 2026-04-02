@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BabeCred — The System Your Relationship Runs On</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- NAME MODAL -->
+    <div id="name-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-brand">Babe<span>Cred</span></div>
+            <p class="modal-sub">The system your relationship already runs on.</p>
+            <label for="name-input">Choose a screen name:</label>
+            <input type="text" id="name-input" maxlength="24" placeholder="xX_GoodBoyfriend_Xx" autocomplete="off">
+            <button id="name-submit">Sign On</button>
+            <p class="modal-fine">By entering you acknowledge Babe Cred as real and binding.</p>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app" class="hidden">
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="logo">Babe<span>Cred</span></div>
+                <div class="topbar-tagline">The system your relationship already runs on.</div>
+            </div>
+            <div class="topbar-right">
+                <span class="topbar-name" id="topbar-name"></span>
+                <span class="topbar-balance" id="topbar-balance">0</span>
+            </div>
+        </header>
+
+        <!-- MARQUEE -->
+        <div class="marquee-bar">
+            <span class="marquee-text">✦ BABE CRED ✦ "I was going to do it" does not count ✦ gas station flowers = 50% penalty ✦ forgot anniversary = -999 ✦ trash unasked = +25 ✦ "you look fine" downgraded from compliment to citation ✦ BABE CRED ✦ "I was going to do it" does not count ✦ gas station flowers = 50% penalty ✦ forgot anniversary = -999 ✦ trash unasked = +25 ✦ "you look fine" downgraded from compliment to citation ✦</span>
+        </div>
+
+        <!-- MAIN SPLIT -->
+        <div class="main-split">
+            <!-- LEFT: BALANCE SHEET -->
+            <div class="balance-side">
+                <div class="balance-header">
+                    <div class="balance-label">Current Babe Cred Balance</div>
+                    <div class="balance-number" id="balance-number">0</div>
+                    <div class="balance-sub" id="balance-sub"></div>
+                </div>
+
+                <div class="quick-adds" id="quick-adds">
+                </div>
+
+                <div class="goals-section" id="goals-section">
+                </div>
+
+                <div class="ledger" id="ledger">
+                    <div class="ledger-header">
+                        <span>Recent Transactions</span>
+                        <span>Value</span>
+                    </div>
+                    <div class="ledger-rows" id="ledger-rows">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: CHAT -->
+            <div class="chat-side">
+                <div class="chat-header">
+                    <div class="chat-room-name">The Lobby</div>
+                    <div class="chat-online"><span class="online-dot"></span><span id="online-count">0</span> online</div>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="sys-msg"><b>BabeCredBot:</b> Welcome to the Lobby. All cred is final. No refunds. No appeals.</div>
+                </div>
+                <div class="chat-input-area">
+                    <form id="chat-form" class="chat-form">
+                        <input type="text" id="chat-input" placeholder="say something..." maxlength="500" autocomplete="off">
+                        <button type="submit">Send</button>
+                    </form>
+                    <div class="chat-who">chatting as: <b id="chat-name"></b></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bottom-bar">
+            &copy; 2025 BabeCred.com ✦ A very serious financial institution ✦ All cred reserved ✦ Data stored locally
+        </footer>
+    </div>
+
+    <!-- CUSTOM ENTRY MODAL -->
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal modal-custom">
+            <div class="modal-custom-title" id="custom-modal-title">Custom Deposit</div>
+            <label for="custom-desc">What did you do?</label>
+            <input type="text" id="custom-desc" maxlength="60" placeholder="e.g. Fixed the leaky faucet" autocomplete="off">
+            <label for="custom-value">Cred value:</label>
+            <input type="number" id="custom-value" min="1" max="500" placeholder="15">
+            <div id="custom-halflife-section">
+                <label for="custom-halflife">How long will she remember?</label>
+                <select id="custom-halflife">
+                    <option value="5">A few days (5-day half-life)</option>
+                    <option value="10" selected>A week or two (10-day half-life)</option>
+                    <option value="21">A long time (21-day half-life)</option>
+                </select>
+            </div>
+            <div class="modal-custom-btns">
+                <button id="custom-cancel" class="btn-secondary">Cancel</button>
+                <button id="custom-confirm" class="btn-primary">Add Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GOAL MODAL -->
+    <div id="goal-modal" class="modal-overlay hidden">
+        <div class="modal modal-custom">
+            <div class="modal-custom-title">Plan a Withdrawal</div>
+            <label for="goal-name">What's the event?</label>
+            <input type="text" id="goal-name" maxlength="40" placeholder="e.g. Fantasy Draft Weekend" autocomplete="off">
+            <label for="goal-date">When is it?</label>
+            <input type="date" id="goal-date">
+            <label for="goal-cost">How much cred will it cost?</label>
+            <input type="number" id="goal-cost" min="1" max="500" placeholder="80">
+            <div class="modal-custom-btns">
+                <button id="goal-cancel" class="btn-secondary">Cancel</button>
+                <button id="goal-confirm" class="btn-primary">Set Goal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="cred-engine.js"></script>
+    <script src="chat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
