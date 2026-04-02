@@ -297,7 +297,8 @@
             const isPos = e.currentValue >= 0;
             const prefix = isPos ? '+' : '';
             const origPrefix = e.value >= 0 ? '+' : '';
-            html += '<div class="ledger-row">'
+            html += '<div class="ledger-swipe" data-entry-id="' + e.id + '">'
+                + '<div class="ledger-row">'
                 + '<div class="lr-left">'
                 + '<span class="lr-icon">' + (e.emoji || '•') + '</span>'
                 + '<div><div class="lr-desc">' + sanitize(e.desc) + '</div>'
@@ -306,10 +307,86 @@
                 + '<div class="lr-right">'
                 + '<div class="lr-current ' + (isPos ? 'pos' : 'neg') + '">' + prefix + Math.round(e.currentValue) + '</div>'
                 + '<div class="lr-original">was ' + origPrefix + e.value + '</div>'
-                + '</div></div>';
+                + '</div></div>'
+                + '<div class="lr-delete">Delete</div>'
+                + '</div>';
         }
 
         ledgerRows.innerHTML = html;
+        bindSwipeToDelete();
+    }
+
+    // --- Swipe to delete ---
+
+    function bindSwipeToDelete() {
+        var rows = ledgerRows.querySelectorAll('.ledger-swipe');
+        rows.forEach(function (row) {
+            var startX = 0;
+            var currentX = 0;
+            var swiping = false;
+            var rowInner = row.querySelector('.ledger-row');
+            var deleteBtn = row.querySelector('.lr-delete');
+            var threshold = 70;
+
+            function onStart(x) {
+                swiping = true;
+                startX = x;
+                currentX = 0;
+                rowInner.style.transition = 'none';
+            }
+
+            function onMove(x) {
+                if (!swiping) return;
+                currentX = Math.min(0, x - startX);
+                if (currentX < -threshold) currentX = -threshold - (currentX + threshold) * 0.2;
+                rowInner.style.transform = 'translateX(' + currentX + 'px)';
+            }
+
+            function onEnd() {
+                if (!swiping) return;
+                swiping = false;
+                rowInner.style.transition = 'transform 0.2s ease';
+                if (currentX < -threshold * 0.6) {
+                    rowInner.style.transform = 'translateX(-' + threshold + 'px)';
+                    row.classList.add('swiped');
+                } else {
+                    rowInner.style.transform = 'translateX(0)';
+                    row.classList.remove('swiped');
+                }
+            }
+
+            // Touch
+            rowInner.addEventListener('touchstart', function (e) {
+                onStart(e.touches[0].clientX);
+            }, { passive: true });
+            rowInner.addEventListener('touchmove', function (e) {
+                onMove(e.touches[0].clientX);
+            }, { passive: true });
+            rowInner.addEventListener('touchend', onEnd);
+
+            // Mouse
+            rowInner.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                onStart(e.clientX);
+            });
+            document.addEventListener('mousemove', function (e) {
+                onMove(e.clientX);
+            });
+            document.addEventListener('mouseup', onEnd);
+
+            // Delete button
+            deleteBtn.addEventListener('click', function () {
+                var id = row.dataset.entryId;
+                row.style.transition = 'opacity 0.2s, max-height 0.2s';
+                row.style.opacity = '0';
+                row.style.maxHeight = '0';
+                row.style.overflow = 'hidden';
+                setTimeout(function () {
+                    CredEngine.deleteEntry(id);
+                    renderAll();
+                }, 200);
+            });
+        });
     }
 
     // --- Chat ---
