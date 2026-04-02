@@ -117,6 +117,10 @@
 
     // --- Render balance ---
 
+    var commentText = document.getElementById('comment-text');
+    var commentInsight = document.getElementById('comment-insight');
+    var saItems = document.getElementById('sa-items');
+
     function renderBalance() {
         var bal = CredEngine.calculateBalance();
         var rounded = Math.round(bal);
@@ -128,6 +132,38 @@
         var trend = CredEngine.weeklyTrend();
         var trendPrefix = trend.net >= 0 ? '▲' : '▼';
         balanceSub.textContent = trendPrefix + ' ' + Math.abs(Math.round(trend.net)) + ' this week';
+
+        // Commentary
+        commentText.textContent = CommentEngine.getComment(rounded);
+        var ledger = CredEngine.getLedgerWithValues();
+        commentInsight.innerHTML = CommentEngine.getInsight(rounded, ledger);
+
+        // Suggested actions
+        var suggestions = CommentEngine.getSuggestions(rounded);
+        var html = '';
+        suggestions.forEach(function (s) {
+            var valCls = s.type === 'deposit' ? 'pos' : 'neg';
+            html += '<div class="sa-item" data-sa-type="' + s.type + '" data-sa-emoji="' + s.emoji + '" data-sa-name="' + s.name + '" data-sa-val="' + s.val + '">'
+                + '<div class="sa-emoji">' + s.emoji + '</div>'
+                + '<div class="sa-name">' + s.name + '</div>'
+                + '<div class="sa-val ' + valCls + '">' + s.val + '</div>'
+                + '</div>';
+        });
+        saItems.innerHTML = html;
+
+        // Bind suggestion clicks -> open wizard pre-filled
+        saItems.querySelectorAll('.sa-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                var type = this.dataset.saType;
+                // Open the wizard at step 1 with type pre-selected
+                wizState = { type: type, step: 2, cat: null, effort: null, modifier: null, when: null, whenDate: null };
+                customTitle.textContent = type === 'deposit' ? 'Deposit' : 'Withdrawal';
+                wizDesc.value = '';
+                wizDateInput.classList.add('hidden');
+                customModal.classList.remove('hidden');
+                renderWizardStep();
+            });
+        });
     }
 
     // =============================================
