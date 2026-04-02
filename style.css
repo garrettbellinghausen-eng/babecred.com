@@ -1160,7 +1160,7 @@ body::before {
 
     /* Chat takes full height */
     .chat-messages { padding: 12px; }
-    .chat-input-area { padding: 10px 12px; }
+    .chat-input-area { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
     .chat-form input { padding: 10px; font-size: 14px; }
     .chat-form button { padding: 10px 16px; }
 
