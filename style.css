@@ -24,8 +24,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body {
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 body {
@@ -702,6 +702,7 @@ body::before {
 
 #main-app {
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -1160,7 +1161,10 @@ body::before {
 
     /* Chat takes full height */
     .chat-messages { padding: 12px; }
-    .chat-input-area { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
+    .chat-input-area {
+        padding: 10px 12px 30px;
+        padding-bottom: max(30px, env(safe-area-inset-bottom, 30px));
+    }
     .chat-form input { padding: 10px; font-size: 14px; }
     .chat-form button { padding: 10px 16px; }
 
