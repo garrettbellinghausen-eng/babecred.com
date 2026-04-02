@@ -353,6 +353,39 @@
 
     renderQuickAdds();
 
+    // --- Mobile tab switching ---
+
+    const mobileTabs = document.getElementById('mobile-tabs');
+    const balanceSide = document.querySelector('.balance-side');
+    const chatSide = document.querySelector('.chat-side');
+
+    if (mobileTabs) {
+        mobileTabs.addEventListener('click', function (e) {
+            const tab = e.target.closest('.mobile-tab');
+            if (!tab) return;
+            const target = tab.dataset.tab;
+
+            mobileTabs.querySelectorAll('.mobile-tab').forEach(function (t) {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+
+            if (target === 'cred') {
+                balanceSide.classList.remove('mobile-hidden');
+                chatSide.classList.add('mobile-hidden');
+            } else {
+                balanceSide.classList.add('mobile-hidden');
+                chatSide.classList.remove('mobile-hidden');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        // Default: show cred tab, hide chat on mobile
+        if (window.innerWidth <= 768) {
+            chatSide.classList.add('mobile-hidden');
+        }
+    }
+
     // --- Periodic recalculation (every 60s for decay updates) ---
 
     setInterval(function () {

@@ -555,10 +555,90 @@ body::before {
     flex-shrink: 0;
 }
 
+/* Mobile tabs - hidden on desktop */
+.mobile-tabs { display: none; }
+
 @media (max-width: 768px) {
-    .main-split { flex-direction: column; }
-    .balance-side { width: 100%; border-right: none; border-bottom: 2px solid var(--brown); max-height: 50vh; }
-    .chat-side { width: 100%; }
     .topbar-tagline { display: none; }
+    .marquee-bar { display: none; }
     .balance-number { font-size: 36px; }
+    .bottom-bar { display: none; }
+
+    /* Tab bar */
+    .mobile-tabs {
+        display: flex;
+        background: var(--bg-dim);
+        border-bottom: 2px solid var(--border);
+        flex-shrink: 0;
+    }
+    .mobile-tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        font-family: 'DM Mono', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--olive);
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        cursor: pointer;
+    }
+    .mobile-tab.active {
+        color: var(--brown);
+        border-bottom-color: var(--mustard);
+    }
+
+    /* Split becomes full-height tabs */
+    .main-split {
+        flex-direction: column;
+        position: relative;
+    }
+    .balance-side {
+        width: 100%;
+        border-right: none;
+        flex: 1;
+        overflow-y: auto;
+    }
+    .chat-side {
+        width: 100%;
+        flex: 1;
+    }
+
+    /* Tab visibility */
+    .balance-side.mobile-hidden { display: none; }
+    .chat-side.mobile-hidden { display: none; }
+
+    /* Quick-add buttons: horizontal swipe, no scrollbar */
+    .qa-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-right: 20px;
+    }
+    .qa-row::-webkit-scrollbar { display: none; }
+    .qa-btn {
+        flex-shrink: 0;
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 3px;
+    }
+
+    /* Bigger tap targets for goals */
+    .goal-item { padding: 10px 14px; }
+    .goal-delete { padding: 4px 8px; }
+
+    /* Ledger fills remaining space */
+    .ledger { min-height: 200px; }
+    .ledger-row { padding: 10px 14px; }
+
+    /* Chat takes full height */
+    .chat-messages { padding: 12px; }
+    .chat-input-area { padding: 10px 12px; }
+    .chat-form input { padding: 10px; font-size: 14px; }
+    .chat-form button { padding: 10px 16px; }
 }
