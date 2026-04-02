@@ -1,12 +1,11 @@
 // firebase-config.js
-// Replace these values with your Firebase project config.
-// Setup: https://console.firebase.google.com → Create project → Realtime Database → Get config
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAlQedJG9TCMNICsl9kBu6dayI0bt6rxGU",
+    authDomain: "babecred.firebaseapp.com",
+    databaseURL: "https://babecred-default-rtdb.firebaseio.com",
+    projectId: "babecred",
+    storageBucket: "babecred.firebasestorage.app",
+    messagingSenderId: "1024063090884",
+    appId: "1:1024063090884:web:890a5c642471fe3fa3d991",
+    measurementId: "G-JYG632ZGD4"
 };
