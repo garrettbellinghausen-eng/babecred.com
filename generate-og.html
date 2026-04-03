@@ -4,6 +4,7 @@
 <h3>Click to download images:</h3>
 <button onclick="generateMain()">Download Main OG Image</button>
 <button onclick="generateUpdate()">Download Update OG Image</button>
+<button onclick="generateUpdate2()">Download Update 2 OG Image</button>
 <button onclick="generateIcon(192)">Download icon-192.png</button>
 <button onclick="generateIcon(512)">Download icon-512.png</button>
 <canvas id="c" width="1200" height="630" style="display:block;margin-top:20px;border:1px solid #ccc;max-width:100%;"></canvas>
@@ -69,6 +70,42 @@ function generateUpdate() {
     ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#1A1108';
     ctx.fillText('BABECRED.COM', 600, 618);
     download(c, 'og-update.png');
+}
+function generateUpdate2() {
+    var c = document.getElementById('c');
+    c.width = 1200; c.height = 630;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#1A1108';
+    ctx.fillRect(0, 0, 1200, 630);
+    ctx.fillStyle = '#CC5500';
+    ctx.fillRect(0, 590, 1200, 40);
+    // Header
+    ctx.font = '900 48px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#FFF8E7';
+    ctx.fillText('BabeCred', 600, 70);
+    ctx.font = '18px Arial'; ctx.fillStyle = '#E8A317';
+    ctx.fillText('UPDATE #2', 600, 100);
+    // Main title
+    ctx.font = '900 52px Arial'; ctx.fillStyle = '#CC5500';
+    ctx.fillText('👸 Babe Info Is Live', 600, 195);
+    // Features
+    ctx.font = '26px Arial'; ctx.fillStyle = '#FFF8E7'; ctx.textAlign = 'left';
+    var features = [
+        '💍  Anniversary & birthday tracking with warnings',
+        '📅  Valentine\'s Day & Mother\'s Day auto-tracked',
+        '🚨  Urgent alerts when you\'re cutting it close',
+        '🎲  Name generator — no more excuses',
+        '📱  Install as app on your phone'
+    ];
+    for (var i = 0; i < features.length; i++) {
+        ctx.fillText(features[i], 120, 280 + i * 48);
+    }
+    // Bottom
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 22px Arial'; ctx.fillStyle = '#E8A317';
+    ctx.fillText('Tap 👸 to set up your dates. The system can\'t help if you don\'t.', 600, 550);
+    ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#1A1108';
+    ctx.fillText('BABECRED.COM', 600, 618);
+    download(c, 'og-update2.png');
 }
 function generateIcon(size) {
     var c = document.getElementById('c');
