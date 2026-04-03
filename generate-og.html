@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Generate OG Image</title></head>
+<body style="margin:20px;font-family:sans-serif;">
+<h3>Click to download OG images:</h3>
+<button onclick="generateMain()">Download Main OG Image</button>
+<button onclick="generateUpdate()">Download Update OG Image</button>
+<canvas id="c" width="1200" height="630" style="display:block;margin-top:20px;border:1px solid #ccc;max-width:100%;"></canvas>
+<script>
+function generateMain() {
+    var c = document.getElementById('c');
+    c.width = 1200; c.height = 630;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#1A1108';
+    ctx.fillRect(0, 0, 1200, 630);
+    ctx.fillStyle = '#E8A317';
+    ctx.fillRect(0, 590, 1200, 40);
+    // Logo circle
+    ctx.beginPath(); ctx.arc(600, 200, 100, 0, Math.PI * 2); ctx.fillStyle = '#1A1108'; ctx.fill();
+    ctx.beginPath(); ctx.arc(600, 200, 100, 0, Math.PI * 2); ctx.strokeStyle = '#E8A317'; ctx.lineWidth = 5; ctx.stroke();
+    ctx.font = '900 80px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#FFF8E7';
+    ctx.fillText('B', 572, 225); ctx.fillStyle = '#E8A317'; ctx.fillText('C', 628, 225);
+    // Title
+    ctx.font = '900 72px Arial'; ctx.fillStyle = '#FFF8E7';
+    ctx.fillText('BabeCred', 600, 370);
+    // Tagline
+    ctx.font = '24px Arial'; ctx.fillStyle = '#6B6B3C';
+    ctx.fillText('THE SYSTEM YOUR RELATIONSHIP ALREADY RUNS ON', 600, 420);
+    // Sub
+    ctx.font = '20px Arial'; ctx.fillStyle = '#CC5500';
+    ctx.fillText('Track it. Plan it. Survive it.', 600, 470);
+    // URL
+    ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#1A1108';
+    ctx.fillText('BABECRED.COM', 600, 618);
+    download(c, 'og-main.png');
+}
+function generateUpdate() {
+    var c = document.getElementById('c');
+    c.width = 1200; c.height = 630;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#1A1108';
+    ctx.fillRect(0, 0, 1200, 630);
+    ctx.fillStyle = '#E8A317';
+    ctx.fillRect(0, 590, 1200, 40);
+    // Header
+    ctx.font = '900 48px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#FFF8E7';
+    ctx.fillText('BabeCred', 600, 70);
+    ctx.font = '18px Arial'; ctx.fillStyle = '#E8A317';
+    ctx.fillText('SYSTEM UPDATE', 600, 100);
+    // Main title
+    ctx.font = '900 56px Arial'; ctx.fillStyle = '#E8A317';
+    ctx.fillText('🏀 Sports & Weather Alerts', 600, 200);
+    // Features
+    ctx.font = '28px Arial'; ctx.fillStyle = '#FFF8E7'; ctx.textAlign = 'left';
+    var features = [
+        '🏈  Patriots, Celtics, Bruins, Red Sox — auto-tracked',
+        '🏆  Super Bowl, Final Four, Masters, NBA Finals',
+        '⛳  Golf weather alerts when Boston hits 60°F',
+        '🎮  Gaming nights when tomorrow is a day off'
+    ];
+    for (var i = 0; i < features.length; i++) {
+        ctx.fillText(features[i], 120, 290 + i * 50);
+    }
+    // Bottom callout
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 24px Arial'; ctx.fillStyle = '#CC5500';
+    ctx.fillText('Plan ahead or pay the price.', 600, 540);
+    ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#1A1108';
+    ctx.fillText('BABECRED.COM', 600, 618);
+    download(c, 'og-update.png');
+}
+function download(canvas, name) {
+    var a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = name;
+    a.click();
+}
+</script>
+</body></html>
