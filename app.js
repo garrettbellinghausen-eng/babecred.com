@@ -858,6 +858,10 @@ function openFullImage(src) {
     var lbArrow = document.getElementById('lb-arrow');
 
     // Toggle collapse
+    // Default collapsed
+    lbBody.classList.add('hidden');
+    lbArrow.classList.add('collapsed');
+
     document.getElementById('lb-toggle').addEventListener('click', function () {
         lbBody.classList.toggle('hidden');
         lbArrow.classList.toggle('collapsed');
