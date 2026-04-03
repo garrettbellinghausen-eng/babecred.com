@@ -9,16 +9,16 @@ const CredEngine = (function () {
     // --- Presets ---
 
     const DEPOSIT_PRESETS = [
-        { emoji: '📱', desc: 'Liked her post',         value: 1,  halfLife: 3  },
-        { emoji: '💬', desc: 'Actually listened',       value: 8,  halfLife: 5  },
-        { emoji: '🧹', desc: 'Cleaned the house',      value: 10, halfLife: 7  },
-        { emoji: '🍳', desc: 'Made breakfast',          value: 12, halfLife: 7  },
-        { emoji: '🍽️', desc: 'Cooked dinner',          value: 12, halfLife: 7  },
-        { emoji: '💐', desc: 'Flowers (no reason)',     value: 15, halfLife: 10 },
-        { emoji: '🗑️', desc: 'Trash (unasked)',        value: 25, halfLife: 7  },
-        { emoji: '✨', desc: 'Surprise date night',     value: 30, halfLife: 14 },
-        { emoji: '👶', desc: 'Took the kids',           value: 40, halfLife: 14 },
-        { emoji: '✈️', desc: 'Planned a trip',          value: 60, halfLife: 28 },
+        { emoji: '📱', desc: 'Liked her post',         value: 1,  halfLife: 1  },
+        { emoji: '💬', desc: 'Actually listened',       value: 8,  halfLife: 2  },
+        { emoji: '🧹', desc: 'Cleaned the house',      value: 10, halfLife: 2  },
+        { emoji: '🍳', desc: 'Made breakfast',          value: 12, halfLife: 2  },
+        { emoji: '🍽️', desc: 'Cooked dinner',          value: 12, halfLife: 2  },
+        { emoji: '💐', desc: 'Flowers (no reason)',     value: 15, halfLife: 3  },
+        { emoji: '🗑️', desc: 'Trash (unasked)',        value: 25, halfLife: 2  },
+        { emoji: '✨', desc: 'Surprise date night',     value: 30, halfLife: 5  },
+        { emoji: '👶', desc: 'Took the kids',           value: 40, halfLife: 5  },
+        { emoji: '✈️', desc: 'Planned a trip',          value: 60, halfLife: 9  },
     ];
 
     const WITHDRAWAL_PRESETS = [
