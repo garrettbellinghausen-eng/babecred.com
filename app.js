@@ -317,16 +317,43 @@ function openFullImage(src) {
     ];
 
     var ALL_WITHDRAWALS = [
+        // Small (-5 to -10)
+        { emoji: '📱', name: 'Scrolling phone in bed', value: -5, rate: 2 },
         { emoji: '😐', name: '"You look fine"', value: -10, rate: 2 },
+        { emoji: '🤷', name: '"I don\'t care where we eat"', value: -8, rate: 2 },
         { emoji: '📺', name: 'TV binge', value: -10, rate: 2 },
+        { emoji: '🏌️', name: 'Driving range / simulator', value: -10, rate: 2 },
+        { emoji: '😴', name: 'Fell asleep on the couch', value: -5, rate: 2 },
+        { emoji: '🙄', name: 'Eye roll (she saw it)', value: -8, rate: 2 },
+        { emoji: '🤦', name: '"Relax" (never say this)', value: -12, rate: 2 },
+        // Medium (-15 to -30)
         { emoji: '🍺', name: 'Happy hour', value: -15, rate: 2 },
         { emoji: '🎮', name: '"One more game"', value: -20, rate: 2 },
+        { emoji: '🎮', name: 'Gaming all night', value: -30, rate: 2 },
+        { emoji: '📱', name: 'Liked another girl\'s post', value: -25, rate: 2 },
+        { emoji: '🛋️', name: 'Did nothing all weekend', value: -20, rate: 2 },
+        { emoji: '🍕', name: 'Forgot to pick up dinner', value: -15, rate: 2 },
+        { emoji: '🚗', name: 'Left the toilet seat up', value: -5, rate: 2 },
+        { emoji: '📞', name: 'Forgot to call back', value: -10, rate: 2 },
+        { emoji: '🗓️', name: 'Double-booked her plans', value: -20, rate: 2 },
+        // Large (-25 to -40)
         { emoji: '⛳', name: 'Golf day', value: -25, rate: 2 },
         { emoji: '🍺', name: "Boys' night out", value: -30, rate: 2 },
         { emoji: '🎣', name: 'Fishing trip', value: -35, rate: 2 },
+        { emoji: '🏎️', name: 'Bought something expensive', value: -40, rate: 2 },
+        { emoji: '🍻', name: 'Came home late (no text)', value: -35, rate: 2 },
+        { emoji: '🤥', name: '"I\'m 5 minutes away" (was 30)', value: -20, rate: 2 },
+        // Huge (-50 to -80)
         { emoji: '🏈', name: "Boys' weekend", value: -80, rate: 2 },
+        { emoji: '🎰', name: 'Casino night', value: -50, rate: 2 },
+        { emoji: '🏖️', name: "Guys' trip", value: -60, rate: 2 },
+        { emoji: '🏈', name: 'Fantasy draft weekend', value: -60, rate: 2 },
+        // Catastrophic (-100+)
         { emoji: '📅', name: 'Forgot anniversary', value: -150, rate: 1 },
+        { emoji: '🎂', name: 'Forgot her birthday', value: -120, rate: 1 },
+        { emoji: '💐', name: 'Forgot Valentine\'s Day', value: -100, rate: 1 },
         { emoji: '🏀', name: "Final 4 w/ the boys", value: -200, rate: 1 },
+        { emoji: '✈️', name: 'Bachelor party weekend', value: -120, rate: 1 },
     ];
 
     var pickerSelected = null; // the chosen preset
