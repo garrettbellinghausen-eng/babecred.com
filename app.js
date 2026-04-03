@@ -548,14 +548,42 @@ function openFullImage(src) {
     // --- Swipe to delete ---
 
     function bindDeleteButtons() {
+        var activeBtn = null;
+
+        // Tap anywhere to reset the active confirm button
+        document.addEventListener('click', function () {
+            if (activeBtn) {
+                activeBtn.textContent = '✕';
+                activeBtn.classList.remove('lr-x-confirm');
+                activeBtn = null;
+            }
+        });
+
         ledgerRows.querySelectorAll('.lr-x').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                var id = this.dataset.id;
-                var row = this.closest('.ledger-row-wrap');
-                row.style.transition = 'opacity 0.2s';
-                row.style.opacity = '0';
-                setTimeout(function () { CredEngine.deleteEntry(id); renderAll(); }, 200);
+
+                // If this button is already in confirm state — delete
+                if (this.classList.contains('lr-x-confirm')) {
+                    var id = this.dataset.id;
+                    var row = this.closest('.ledger-row-wrap');
+                    row.style.transition = 'opacity 0.2s';
+                    row.style.opacity = '0';
+                    activeBtn = null;
+                    setTimeout(function () { CredEngine.deleteEntry(id); renderAll(); }, 200);
+                    return;
+                }
+
+                // Reset any other active confirm button
+                if (activeBtn) {
+                    activeBtn.textContent = '✕';
+                    activeBtn.classList.remove('lr-x-confirm');
+                }
+
+                // Enter confirm state
+                this.textContent = 'Delete?';
+                this.classList.add('lr-x-confirm');
+                activeBtn = this;
             });
         });
     }
