@@ -770,6 +770,28 @@ function openFullImage(src) {
         if (window.innerWidth <= 768) chatSide.classList.add('mobile-hidden');
     }
 
+    // --- Dark mode toggle ---
+
+    var darkToggle = document.getElementById('dark-toggle');
+    var savedTheme = localStorage.getItem('babecred_theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        darkToggle.textContent = '☀️';
+    }
+
+    darkToggle.addEventListener('click', function () {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            darkToggle.textContent = '🌙';
+            localStorage.setItem('babecred_theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkToggle.textContent = '☀️';
+            localStorage.setItem('babecred_theme', 'dark');
+        }
+    });
+
     // --- Periodic recalculation (every 60s for decay updates) ---
 
     setInterval(function () {
