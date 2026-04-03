@@ -444,7 +444,8 @@ function openFullImage(src) {
 
     wizNext.addEventListener('click', function () {
         // Only fires on step 5 (Add Entry)
-        if (wizState.when === null) return;
+        // Default to "now" if no when selected
+        if (wizState.when === null) wizState.when = 'now';
         if (wizState.when === 'custom' && !wizState.whenDate) return;
 
         var val = calcWizValue();
