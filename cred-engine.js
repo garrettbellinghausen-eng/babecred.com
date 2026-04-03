@@ -39,7 +39,10 @@ const CredEngine = (function () {
 
     function depositCurrentValue(entry) {
         const days = daysElapsed(entry.timestamp);
-        return entry.value * Math.pow(0.5, days / entry.halfLife);
+        // Kids multiplier: more kids = shorter effective half-life
+        var mult = (typeof BabeInfo !== 'undefined') ? BabeInfo.getKidsMultiplier() : 1;
+        var effectiveHalfLife = entry.halfLife * mult;
+        return entry.value * Math.pow(0.5, days / effectiveHalfLife);
     }
 
     function withdrawalCurrentValue(entry) {
@@ -64,7 +67,9 @@ const CredEngine = (function () {
 
     function depositValueAtDate(entry, futureDate) {
         const days = Math.max(0, (futureDate - entry.timestamp) / MS_PER_DAY);
-        return entry.value * Math.pow(0.5, days / entry.halfLife);
+        var mult = (typeof BabeInfo !== 'undefined') ? BabeInfo.getKidsMultiplier() : 1;
+        var effectiveHalfLife = entry.halfLife * mult;
+        return entry.value * Math.pow(0.5, days / effectiveHalfLife);
     }
 
     function withdrawalValueAtDate(entry, futureDate) {

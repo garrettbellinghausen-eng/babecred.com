@@ -1007,6 +1007,26 @@ function openFullImage(src) {
         });
     }
 
+    var selectedKids = 0;
+    var KIDS_HINTS = [
+        'No kids — she has all her attention on you. Lucky.',
+        '1 kid — some buffer. Deposits last almost normal.',
+        '2 kids — she\'s busy. Your good deeds fade 25% faster.',
+        '3 kids — outnumbered. Deposits decay 40% faster.',
+        '4+ kids — chaos mode. She forgot the flowers before you got home.'
+    ];
+
+    function renderKidsPicker() {
+        document.querySelectorAll('.kids-btn').forEach(function (btn) {
+            btn.classList.toggle('selected', parseInt(btn.dataset.kids) === selectedKids);
+            btn.onclick = function () {
+                selectedKids = parseInt(this.dataset.kids);
+                renderKidsPicker();
+            };
+        });
+        document.getElementById('kids-hint').textContent = KIDS_HINTS[Math.min(selectedKids, 4)];
+    }
+
     function renderBabeCustomList() {
         babeCustomList.innerHTML = '';
         tempCustom.forEach(function (c, i) {
@@ -1028,8 +1048,10 @@ function openFullImage(src) {
         selectedIcon = info.icon || '👸';
         babeModalIcon.textContent = selectedIcon;
         tempCustom = (info.custom || []).slice();
+        selectedKids = parseInt(info.kids) || 0;
         renderBabeCustomList();
         renderBabeIconPicker();
+        renderKidsPicker();
         babeModal.classList.remove('hidden');
     });
 
@@ -1053,6 +1075,7 @@ function openFullImage(src) {
             anniversary: dateToMMDD(babeAnniversary.value) || null,
             birthday: dateToMMDD(babeBirthday.value) || null,
             icon: selectedIcon,
+            kids: selectedKids,
             custom: tempCustom
         });
         babeIconEl.textContent = selectedIcon;

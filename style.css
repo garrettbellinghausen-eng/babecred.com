@@ -213,6 +213,35 @@ body::before {
     outline: none;
     margin-bottom: 12px;
 }
+.kids-picker {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.kids-btn {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.12s;
+}
+.kids-btn:hover { border-color: var(--mustard); }
+.kids-btn.selected { border-color: var(--mustard); background: rgba(232,163,23,0.15); color: var(--brown); }
+.kids-hint {
+    font-size: 9px;
+    color: var(--olive);
+    margin-bottom: 12px;
+    text-align: center;
+    font-style: italic;
+}
+[data-theme="dark"] .kids-btn { background: #222236; border-color: #444; color: #e8e2d4; }
+
 .babe-icon-picker {
     display: flex;
     gap: 8px;

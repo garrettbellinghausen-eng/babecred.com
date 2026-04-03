@@ -103,6 +103,17 @@ var BabeInfo = (function () {
         return events;
     }
 
+    // Kids decay multiplier — more kids = faster deposit decay
+    function getKidsMultiplier() {
+        var info = load();
+        var kids = parseInt(info.kids) || 0;
+        if (kids === 0) return 1;
+        if (kids === 1) return 0.9;
+        if (kids === 2) return 0.75;
+        if (kids === 3) return 0.6;
+        return 0.5; // 4+ kids
+    }
+
     // Check if profile has been set up
     function isConfigured() {
         var info = load();
@@ -113,6 +124,7 @@ var BabeInfo = (function () {
         getInfo: getInfo,
         setInfo: setInfo,
         getUpcoming: getUpcoming,
+        getKidsMultiplier: getKidsMultiplier,
         isConfigured: isConfigured
     };
 })();
