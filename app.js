@@ -135,6 +135,11 @@ function openFullImage(src) {
                 onPresence: function (users) { onlineCount.textContent = users.length; }
             });
             Chat.join(name);
+            // One-time bot announcement
+            if (!localStorage.getItem('babecred_bot_v1')) {
+                Chat.send('BabeCredBot', 'NEW — The system now tracks Boston sports and weather. Celtics, Bruins, Sox, Pats, golf weather, and every major event auto-suggest in your feed. No work tomorrow? Gaming with the boys is on the menu. Plan ahead or pay the price.', 0);
+                localStorage.setItem('babecred_bot_v1', '1');
+            }
         } catch (e) {
             console.warn('Chat init failed:', e);
         }
