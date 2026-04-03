@@ -176,14 +176,7 @@ function openFullImage(src) {
             });
             Chat.join(name);
             // One-time bot announcement
-            if (!localStorage.getItem('babecred_bot_v1')) {
-                Chat.send('BabeCredBot', 'NEW — The system now tracks Boston sports and weather. Celtics, Bruins, Sox, Pats, golf weather, and every major event auto-suggest in your feed. No work tomorrow? Gaming with the boys is on the menu. Plan ahead or pay the price.', 0);
-                localStorage.setItem('babecred_bot_v1', '1');
-            }
-            if (!localStorage.getItem('babecred_bot_v2')) {
-                Chat.send('BabeCredBot', 'UPDATE — Tap the 👸 in the header to set up Babe Info. Enter her anniversary, birthday, and any other dates you can\'t afford to forget. The system will warn you days in advance. Valentine\'s and Mother\'s Day are auto-tracked. Also new: leaderboard is live. Top 5 = Golf Ready ⛳. Bottom 5 = Doghouse 🛋️. Your cred is public now.', 0);
-                localStorage.setItem('babecred_bot_v2', '1');
-            }
+            // Bot announcements are now in the static HTML welcome message only
         } catch (e) {
             console.warn('Chat init failed:', e);
         }
@@ -679,7 +672,14 @@ function openFullImage(src) {
         return '';
     }
 
+    var seenBotMsgs = {};
     function renderChatMessage(msg) {
+        // Deduplicate BabeCredBot messages — only show each unique text once
+        if (msg.name === 'BabeCredBot') {
+            var key = msg.text.substring(0, 50);
+            if (seenBotMsgs[key]) return;
+            seenBotMsgs[key] = true;
+        }
         var el = document.createElement('div');
         el.className = 'chat-msg';
         var c = getNameColor(msg.name);
