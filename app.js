@@ -546,6 +546,13 @@ function openFullImage(src) {
 
     // --- Swipe to delete ---
 
+    function closeAllSwipes() {
+        ledgerRows.querySelectorAll('.ledger-swipe .ledger-row').forEach(function (r) {
+            r.style.transition = 'transform 0.2s ease';
+            r.style.transform = 'translateX(0)';
+        });
+    }
+
     function bindSwipeToDelete() {
         var rows = ledgerRows.querySelectorAll('.ledger-swipe');
         rows.forEach(function (row) {
@@ -553,8 +560,17 @@ function openFullImage(src) {
             var rowInner = row.querySelector('.ledger-row');
             var deleteBtn = row.querySelector('.lr-delete');
             var threshold = 70;
+            var isOpen = false;
 
-            function onStart(x) { swiping = true; startX = x; currentX = 0; rowInner.style.transition = 'none'; }
+            function onStart(x) {
+                // Close any other open swipes first
+                closeAllSwipes();
+                swiping = true;
+                startX = x;
+                currentX = 0;
+                isOpen = false;
+                rowInner.style.transition = 'none';
+            }
             function onMove(x) {
                 if (!swiping) return;
                 currentX = Math.min(0, x - startX);
@@ -567,10 +583,21 @@ function openFullImage(src) {
                 rowInner.style.transition = 'transform 0.2s ease';
                 if (currentX < -threshold * 0.6) {
                     rowInner.style.transform = 'translateX(-' + threshold + 'px)';
+                    isOpen = true;
                 } else {
                     rowInner.style.transform = 'translateX(0)';
+                    isOpen = false;
                 }
             }
+
+            // Tap on the row when open = close it
+            rowInner.addEventListener('click', function () {
+                if (isOpen) {
+                    rowInner.style.transition = 'transform 0.2s ease';
+                    rowInner.style.transform = 'translateX(0)';
+                    isOpen = false;
+                }
+            });
 
             rowInner.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX); }, { passive: true });
             rowInner.addEventListener('touchmove', function (e) { onMove(e.touches[0].clientX); }, { passive: true });
@@ -579,7 +606,8 @@ function openFullImage(src) {
             document.addEventListener('mousemove', function (e) { onMove(e.clientX); });
             document.addEventListener('mouseup', onEnd);
 
-            deleteBtn.addEventListener('click', function () {
+            deleteBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
                 var id = row.dataset.entryId;
                 row.style.transition = 'opacity 0.2s, max-height 0.2s';
                 row.style.opacity = '0';
