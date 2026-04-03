@@ -191,16 +191,18 @@ function openFullImage(src) {
         saItems.innerHTML = html;
 
         // Bind suggestion clicks -> open wizard pre-filled
-        saItems.querySelectorAll('.sa-item').forEach(function (item) {
+        saItems.querySelectorAll('.sa-item').forEach(function (item, idx) {
             item.addEventListener('click', function () {
-                var type = this.dataset.saType;
-                // Open the wizard at step 1 with type pre-selected
-                wizState = { type: type, step: 2, cat: null, effort: null, modifier: null, when: null, whenDate: null };
-                customTitle.textContent = type === 'deposit' ? 'Deposit' : 'Withdrawal';
-                wizDesc.value = '';
-                wizDateInput.classList.add('hidden');
-                customModal.classList.remove('hidden');
-                renderWizardStep();
+                var s = suggestions[idx];
+                if (s.type === 'deposit') {
+                    CredEngine.addDeposit(s.name, s.emoji, s.value, s.halfLife);
+                } else {
+                    CredEngine.addWithdrawal(s.name, s.emoji, s.value, s.rate || 2);
+                }
+                // Flash feedback
+                item.style.background = 'rgba(232,163,23,0.3)';
+                setTimeout(function () { item.style.background = ''; }, 300);
+                renderAll();
             });
         });
     }

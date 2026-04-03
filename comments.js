@@ -195,58 +195,53 @@ var CommentEngine = (function () {
     }
 
     // Suggested actions based on balance
+    // Each suggestion has full data to log directly: value, halfLife (deposits), rate (withdrawals)
     function getSuggestions(bal) {
         if (bal <= -100) {
-            // Emergency mode — big gestures only
             return [
-                { emoji: '✈️', name: 'Plan a trip', val: '+60', type: 'deposit' },
-                { emoji: '✨', name: 'Surprise date', val: '+30', type: 'deposit' },
-                { emoji: '👶', name: 'Take the kids', val: '+40', type: 'deposit' },
-                { emoji: '🎁', name: 'Thoughtful gift', val: '+25', type: 'deposit' },
+                { emoji: '✈️', name: 'Plan a trip', val: '+60', type: 'deposit', value: 60, halfLife: 28 },
+                { emoji: '✨', name: 'Surprise date', val: '+30', type: 'deposit', value: 30, halfLife: 14 },
+                { emoji: '👶', name: 'Take the kids', val: '+40', type: 'deposit', value: 40, halfLife: 14 },
+                { emoji: '🎁', name: 'Thoughtful gift', val: '+25', type: 'deposit', value: 25, halfLife: 10 },
             ];
         }
         if (bal <= -50) {
-            // Recovery mode — consistent effort
             return [
-                { emoji: '✨', name: 'Date night', val: '+30', type: 'deposit' },
-                { emoji: '🗑️', name: 'Trash (unasked)', val: '+25', type: 'deposit' },
-                { emoji: '🍳', name: 'Make breakfast', val: '+12', type: 'deposit' },
-                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit' },
+                { emoji: '✨', name: 'Date night', val: '+30', type: 'deposit', value: 30, halfLife: 14 },
+                { emoji: '🗑️', name: 'Trash (unasked)', val: '+25', type: 'deposit', value: 25, halfLife: 7 },
+                { emoji: '🍳', name: 'Make breakfast', val: '+12', type: 'deposit', value: 12, halfLife: 7 },
+                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit', value: 15, halfLife: 10 },
             ];
         }
         if (bal < 0) {
-            // Slightly negative — quick wins
             return [
-                { emoji: '🗑️', name: 'Trash (unasked)', val: '+25', type: 'deposit' },
-                { emoji: '🍳', name: 'Breakfast', val: '+12', type: 'deposit' },
-                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit' },
-                { emoji: '💬', name: 'Actually listen', val: '+8', type: 'deposit' },
+                { emoji: '🗑️', name: 'Trash (unasked)', val: '+25', type: 'deposit', value: 25, halfLife: 7 },
+                { emoji: '🍳', name: 'Breakfast', val: '+12', type: 'deposit', value: 12, halfLife: 7 },
+                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit', value: 15, halfLife: 10 },
+                { emoji: '💬', name: 'Actually listen', val: '+8', type: 'deposit', value: 8, halfLife: 5 },
             ];
         }
         if (bal < 50) {
-            // Near zero or slightly positive — build buffer
             return [
-                { emoji: '🧹', name: 'Clean up', val: '+10', type: 'deposit' },
-                { emoji: '🍽️', name: 'Cook dinner', val: '+12', type: 'deposit' },
-                { emoji: '🗑️', name: 'Trash', val: '+25', type: 'deposit' },
-                { emoji: '📱', name: 'Like her post', val: '+1', type: 'deposit' },
+                { emoji: '🧹', name: 'Clean up', val: '+10', type: 'deposit', value: 10, halfLife: 7 },
+                { emoji: '🍽️', name: 'Cook dinner', val: '+12', type: 'deposit', value: 12, halfLife: 7 },
+                { emoji: '🗑️', name: 'Trash', val: '+25', type: 'deposit', value: 25, halfLife: 7 },
+                { emoji: '📱', name: 'Like her post', val: '+1', type: 'deposit', value: 1, halfLife: 3 },
             ];
         }
         if (bal < 100) {
-            // Positive — mix of deposits and affordable withdrawals
             return [
-                { emoji: '🍳', name: 'Breakfast', val: '+12', type: 'deposit' },
-                { emoji: '🎮', name: 'Gaming ok', val: '-20', type: 'withdrawal' },
-                { emoji: '⛳', name: 'Golf day', val: '-25', type: 'withdrawal' },
-                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit' },
+                { emoji: '🍳', name: 'Breakfast', val: '+12', type: 'deposit', value: 12, halfLife: 7 },
+                { emoji: '🎮', name: 'Gaming ok', val: '-20', type: 'withdrawal', value: -20, rate: 2 },
+                { emoji: '⛳', name: 'Golf day', val: '-25', type: 'withdrawal', value: -25, rate: 2 },
+                { emoji: '💐', name: 'Flowers', val: '+15', type: 'deposit', value: 15, halfLife: 10 },
             ];
         }
-        // High positive — you can afford things
         return [
-            { emoji: '🍺', name: "Boys' night", val: '-30', type: 'withdrawal' },
-            { emoji: '🎮', name: 'Game all day', val: '-20', type: 'withdrawal' },
-            { emoji: '⛳', name: 'Golf day', val: '-25', type: 'withdrawal' },
-            { emoji: '🏈', name: "Boys' weekend", val: '-80', type: 'withdrawal' },
+            { emoji: '🍺', name: "Boys' night", val: '-30', type: 'withdrawal', value: -30, rate: 2 },
+            { emoji: '🎮', name: 'Game all day', val: '-20', type: 'withdrawal', value: -20, rate: 2 },
+            { emoji: '⛳', name: 'Golf day', val: '-25', type: 'withdrawal', value: -25, rate: 2 },
+            { emoji: '🏈', name: "Boys' weekend", val: '-80', type: 'withdrawal', value: -80, rate: 2 },
         ];
     }
 
