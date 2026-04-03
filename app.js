@@ -113,6 +113,46 @@ function openFullImage(src) {
     document.getElementById('ob-next-2').addEventListener('click', function () { showObPage(2); });
     document.getElementById('ob-next-3').addEventListener('click', function () { showObPage(3); });
 
+    // --- Name Generator ---
+
+    var NAME_PREFIXES = [
+        'xX_', 'The_', 'Big_', 'Sir_', 'King_', 'Chief_', 'Captain_', 'Coach_',
+        'Don_', 'Agent_', 'DJ_', 'Lil_', 'MC_', 'Dr_', 'Mr_', 'Uncle_'
+    ];
+    var NAME_SUFFIXES = [
+        '_Xx', '_69', '_420', '_MVP', '_CEO', '_Sr', '_Jr', '_III',
+        '_PhD', '_Esq', '_OG', '_VIP', '_Pro', '_TM', '_99', '_01'
+    ];
+    var NAME_MIDDLES = [
+        'Cred', 'Babe', 'Smooth', 'Cash', 'Hustle', 'Grind', 'Clutch', 'Alpha',
+        'Sauce', 'Vibe', 'Legend', 'Ace', 'Boss', 'Rizz', 'Chill', 'Flex',
+        'Dapper', 'Slick', 'Dreamy', 'Charming', 'Loyal', 'Romantic',
+        'Whipped', 'Couch', 'Doghouse', 'Redeemed', 'Deficit', 'Bankrupt',
+        'GoodBF', 'HubbyMVP', 'CredKing', 'FlowerBoy', 'TrashKing', 'DishDaddy'
+    ];
+    var NAME_PATTERNS = [
+        function (n) { return pick(NAME_PREFIXES) + n + pick(NAME_SUFFIXES); },
+        function (n) { return n + '_' + pick(NAME_MIDDLES); },
+        function (n) { return pick(NAME_MIDDLES) + '_' + n; },
+        function (n) { return n + pick(NAME_SUFFIXES); },
+        function (n) { return pick(NAME_PREFIXES) + n; },
+        function (n) { return n.charAt(0).toUpperCase() + '_' + pick(NAME_MIDDLES) + '_' + Math.floor(Math.random() * 99); },
+        function (n) { return pick(NAME_MIDDLES) + n.charAt(0).toUpperCase() + Math.floor(Math.random() * 999); },
+        function (n) { return 'NotWhipped_' + n; },
+        function (n) { return n + '_EarnsCred'; },
+        function (n) { return 'DadBod_' + n; },
+    ];
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    document.getElementById('name-gen-btn').addEventListener('click', function () {
+        var raw = document.getElementById('name-gen-input').value.trim();
+        var name = raw || 'Bro';
+        var generated = pick(NAME_PATTERNS)(name);
+        if (generated.length > 24) generated = generated.substring(0, 24);
+        document.getElementById('name-input').value = generated;
+    });
+
     // --- Sign on ---
 
     var isAnon = false;
