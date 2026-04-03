@@ -227,8 +227,19 @@ function openFullImage(src) {
         var allItems = [];
 
         // Fetch coming up events, then render combined strip
+        // Babe Info warnings first (highest priority)
+        var babeEvents = BabeInfo.getUpcoming(14);
+        babeEvents.forEach(function (e) {
+            allItems.push({
+                emoji: e.emoji, name: e.name, day: e.day,
+                val: e.val, type: 'warning', value: 0,
+                halfLife: null, rate: 0, isCU: true, isBabe: true,
+                daysOut: e.daysOut
+            });
+        });
+
         ComingUp.getEvents(function (events) {
-            // Coming Up items first (with cu class for mustard tint)
+            // Sports/weather items
             events.forEach(function (e) {
                 allItems.push({
                     emoji: e.emoji, name: e.name, day: e.day || '',
@@ -248,7 +259,7 @@ function openFullImage(src) {
             var html = '';
             allItems.forEach(function (item) {
                 var valCls = item.type === 'deposit' ? 'pos' : 'neg';
-                var cuClass = item.isCU ? ' cu' : '';
+                var cuClass = item.isBabe ? (item.daysOut <= 3 ? ' babe-urgent' : ' babe-warn') : (item.isCU ? ' cu' : '');
                 html += '<div class="qa-item' + cuClass + '">'
                     + '<div class="qa-emoji">' + item.emoji + '</div>'
                     + '<div class="qa-name">' + item.name + '</div>'
@@ -261,6 +272,11 @@ function openFullImage(src) {
             qaStrip.querySelectorAll('.qa-item').forEach(function (el, idx) {
                 el.addEventListener('click', function () {
                     var a = allItems[idx];
+                    if (a.type === 'warning') {
+                        // Babe warnings are informational — open babe info
+                        babeToggle.click();
+                        return;
+                    }
                     if (a.type === 'deposit') {
                         CredEngine.addDeposit(a.name, a.emoji, a.value, a.halfLife || 7);
                     } else {
@@ -822,6 +838,64 @@ function openFullImage(src) {
         });
         if (window.innerWidth <= 768) chatSide.classList.add('mobile-hidden');
     }
+
+    // --- Babe Info Modal ---
+
+    var babeModal = document.getElementById('babe-modal');
+    var babeToggle = document.getElementById('babe-info-toggle');
+    var babeAnniversary = document.getElementById('babe-anniversary');
+    var babeBirthday = document.getElementById('babe-birthday');
+    var babeCustomList = document.getElementById('babe-custom-list');
+    var babeCustomName = document.getElementById('babe-custom-name');
+    var babeCustomDate = document.getElementById('babe-custom-date');
+    var tempCustom = [];
+
+    function renderBabeCustomList() {
+        babeCustomList.innerHTML = '';
+        tempCustom.forEach(function (c, i) {
+            var el = document.createElement('div');
+            el.className = 'babe-custom-item';
+            el.innerHTML = '<span>📌 ' + c.name + ' — ' + c.date + '</span><button data-idx="' + i + '">✕</button>';
+            el.querySelector('button').addEventListener('click', function () {
+                tempCustom.splice(parseInt(this.dataset.idx), 1);
+                renderBabeCustomList();
+            });
+            babeCustomList.appendChild(el);
+        });
+    }
+
+    babeToggle.addEventListener('click', function () {
+        var info = BabeInfo.getInfo();
+        babeAnniversary.value = info.anniversary || '';
+        babeBirthday.value = info.birthday || '';
+        tempCustom = (info.custom || []).slice();
+        renderBabeCustomList();
+        babeModal.classList.remove('hidden');
+    });
+
+    document.getElementById('babe-custom-add').addEventListener('click', function () {
+        var name = babeCustomName.value.trim();
+        var date = babeCustomDate.value.trim();
+        if (!name || !date || !/^\d{2}-\d{2}$/.test(date)) return;
+        tempCustom.push({ name: name, date: date, cost: -50 });
+        babeCustomName.value = '';
+        babeCustomDate.value = '';
+        renderBabeCustomList();
+    });
+
+    document.getElementById('babe-cancel').addEventListener('click', function () {
+        babeModal.classList.add('hidden');
+    });
+
+    document.getElementById('babe-save').addEventListener('click', function () {
+        BabeInfo.setInfo({
+            anniversary: babeAnniversary.value.trim() || null,
+            birthday: babeBirthday.value.trim() || null,
+            custom: tempCustom
+        });
+        babeModal.classList.add('hidden');
+        renderAll();
+    });
 
     // --- Dark mode toggle ---
 

@@ -123,6 +123,96 @@ body::before {
 
 .hidden { display: none !important; }
 
+/* Babe Info */
+.babe-info-toggle {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+.babe-info-toggle:hover { opacity: 1; }
+.babe-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--olive);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.babe-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--brown);
+    background: #fff;
+    outline: none;
+    margin-bottom: 12px;
+}
+.babe-input:focus { border-color: var(--mustard); }
+.babe-auto {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: var(--bg-dim);
+    border-radius: 4px;
+}
+.babe-auto-item {
+    font-size: 10px;
+    color: var(--olive);
+    padding: 3px 0;
+}
+.babe-add-custom {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+}
+.babe-custom-field { flex: 1; margin-bottom: 0; }
+.babe-custom-date { width: 70px; flex: none; margin-bottom: 0; }
+.babe-custom-add-btn {
+    width: 38px;
+    height: 38px;
+    background: var(--mustard);
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.babe-custom-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border-light);
+}
+.babe-custom-item button {
+    background: none;
+    border: none;
+    color: var(--olive);
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.5;
+}
+.babe-custom-item button:hover { opacity: 1; color: var(--red); }
+
+/* Babe warning items in Coming Up */
+.qa-item.babe-warn { border-color: rgba(204,85,0,0.5); background: rgba(204,85,0,0.08); }
+.qa-item.babe-urgent { border-color: #cc0000; background: rgba(204,0,0,0.1); animation: urgentPulse 2s ease-in-out infinite; }
+@keyframes urgentPulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+
+[data-theme="dark"] .babe-input { background: #0f0f1a; border-color: #444; color: #e8e2d4; }
+[data-theme="dark"] .babe-auto { background: #222236; }
+
 /* Install banner */
 .install-banner {
     position: fixed;
