@@ -1604,6 +1604,14 @@ body::before {
 .mobile-tabs { display: none; }
 
 @media (max-width: 768px) {
+    .modal-overlay {
+        align-items: flex-start;
+    }
+    .modal-picker {
+        margin-top: 20px;
+        max-height: 90vh;
+        border-radius: 8px;
+    }
     .topbar {
         padding: 10px 14px;
     }
