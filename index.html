@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=18">
+    <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
     <!-- ONBOARDING -->
@@ -210,66 +210,41 @@
         </footer>
     </div>
 
-    <!-- ENTRY WIZARD -->
+    <!-- ENTRY PICKER -->
     <div id="custom-modal" class="modal-overlay hidden">
-        <div class="modal modal-wizard">
-            <div class="wizard-header">
-                <div class="modal-custom-title" id="custom-modal-title">New Entry</div>
-                <div class="wizard-steps" id="wizard-steps">
-                    <span class="wstep active">1</span>
-                    <span class="wstep">2</span>
-                    <span class="wstep">3</span>
-                    <span class="wstep">4</span>
-                    <span class="wstep">5</span>
+        <div class="modal modal-picker">
+            <!-- Step 1: Pick a preset -->
+            <div id="picker-step-1">
+                <div class="picker-title">What happened?</div>
+                <input type="text" id="picker-search" class="picker-search" placeholder="Search or type custom..." autocomplete="off">
+                <div id="picker-results">
+                    <div class="picker-section-label pos">+ Deposits</div>
+                    <div class="picker-grid" id="picker-deposits"></div>
+                    <div class="picker-section-label neg">− Withdrawals</div>
+                    <div class="picker-grid" id="picker-withdrawals"></div>
                 </div>
-            </div>
-
-            <!-- Step 1: Deposit or Withdrawal -->
-            <div class="wizard-page" id="wiz-step-1">
-                <label class="wiz-label">What are you logging?</label>
-                <div class="wiz-type-btns">
-                    <button class="wiz-type-btn dep" id="wiz-type-dep">+ Deposit<span class="wiz-type-hint">Something nice for her</span></button>
-                    <button class="wiz-type-btn wit" id="wiz-type-wit">− Withdrawal<span class="wiz-type-hint">Something she won't love</span></button>
+                <div id="picker-custom" class="hidden">
+                    <div class="picker-custom-prompt">No match — add as custom entry:</div>
+                    <div class="picker-custom-btns">
+                        <button class="picker-custom-btn dep" id="picker-custom-dep">+ Deposit</button>
+                        <button class="picker-custom-btn wit" id="picker-custom-wit">− Withdrawal</button>
+                    </div>
                 </div>
+                <button class="picker-cancel" id="picker-cancel">Cancel</button>
             </div>
 
-            <!-- Step 2: Category -->
-            <div class="wizard-page hidden" id="wiz-step-2">
-                <label class="wiz-label">What kind of thing is this?</label>
-                <div class="wiz-cat-grid" id="wiz-categories"></div>
-            </div>
-
-            <!-- Step 3: Effort / Duration -->
-            <div class="wizard-page hidden" id="wiz-step-3">
-                <label class="wiz-label" id="wiz-step3-label">How much effort?</label>
-                <div class="wiz-option-list" id="wiz-effort"></div>
-            </div>
-
-            <!-- Step 4: Modifier -->
-            <div class="wizard-page hidden" id="wiz-step-4">
-                <label class="wiz-label" id="wiz-step4-label">Was it asked for?</label>
-                <div class="wiz-option-list" id="wiz-modifier"></div>
-            </div>
-
-            <!-- Step 5: When + Description + Review -->
-            <div class="wizard-page hidden" id="wiz-step-5">
-                <div class="wiz-estimate" id="wiz-estimate"></div>
-                <label class="wiz-label">When did this happen?</label>
-                <div class="wiz-when-btns" id="wiz-when-btns">
-                    <button class="wiz-when" data-when="now">Just now</button>
-                    <button class="wiz-when" data-when="yesterday">Yesterday</button>
-                    <button class="wiz-when" data-when="tomorrow">Tomorrow</button>
-                    <button class="wiz-when" data-when="custom">Pick a date</button>
+            <!-- Step 2: When -->
+            <div id="picker-step-2" class="hidden">
+                <div class="picker-title">When?</div>
+                <div class="picker-selected" id="picker-selected"></div>
+                <div class="picker-when-grid">
+                    <button class="picker-when" data-when="now">Just now</button>
+                    <button class="picker-when" data-when="yesterday">Yesterday</button>
+                    <button class="picker-when" data-when="tomorrow">Tomorrow</button>
+                    <button class="picker-when" data-when="custom">Pick a date</button>
                 </div>
-                <input type="date" id="wiz-date" class="hidden">
-                <label class="wiz-label" style="margin-top:10px;">Describe it (optional):</label>
-                <input type="text" id="wiz-desc" maxlength="60" placeholder="e.g. Fixed the leaky faucet" autocomplete="off">
-                <div class="wiz-summary" id="wiz-summary"></div>
-            </div>
-
-            <div class="modal-custom-btns">
-                <button id="wiz-back" class="btn-secondary">Back</button>
-                <button id="wiz-next" class="btn-primary">Next</button>
+                <input type="date" id="picker-date" class="hidden">
+                <button class="picker-back" id="picker-back">← Back</button>
             </div>
         </div>
     </div>
@@ -278,10 +253,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="cred-engine.js?v=18"></script>
-    <script src="comments.js?v=18"></script>
-    <script src="coming-up.js?v=18"></script>
-    <script src="chat.js?v=18"></script>
-    <script src="app.js?v=18"></script>
+    <script src="cred-engine.js?v=19"></script>
+    <script src="comments.js?v=19"></script>
+    <script src="coming-up.js?v=19"></script>
+    <script src="chat.js?v=19"></script>
+    <script src="app.js?v=19"></script>
 </body>
 </html>

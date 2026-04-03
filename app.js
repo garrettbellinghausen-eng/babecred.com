@@ -230,260 +230,227 @@ function openFullImage(src) {
     }
 
     // =============================================
-    // ENTRY WIZARD — 5 steps
-    // 1. Deposit or Withdrawal
-    // 2. Category
-    // 3. Effort / Duration
-    // 4. Modifier (asked for? / damage level)
-    // 5. When + Description + Review
+    // ENTRY PICKER — 2 steps
+    // 1. Pick from all presets (deposits + withdrawals)
+    // 2. When did it happen?
     // =============================================
 
-    var DEPOSIT_CATS = [
-        { id: 'service', emoji: '🧹', name: 'Acts of Service', hint: 'Cleaning, cooking, errands, fixing' },
-        { id: 'time', emoji: '🕐', name: 'Quality Time', hint: 'Date night, activity, attention' },
-        { id: 'gift', emoji: '🎁', name: 'Gifts & Gestures', hint: 'Flowers, surprise, thoughtful' },
-        { id: 'words', emoji: '💬', name: 'Words & Attention', hint: 'Compliment, listening, remembering' },
-        { id: 'kids', emoji: '👶', name: 'Kid Duty', hint: 'Took kids, school, bedtime' },
-        { id: 'above', emoji: '✈️', name: 'Above & Beyond', hint: 'Trip, major surprise, big effort' }
-    ];
-    var WITHDRAW_CATS = [
-        { id: 'screen', emoji: '🎮', name: 'Screen Time', hint: 'Gaming, phone, TV binge' },
-        { id: 'social', emoji: '🍺', name: 'Boys Night / Social', hint: 'Night out, sports bar, group' },
-        { id: 'solo', emoji: '🏌️', name: 'Solo Activity', hint: 'Golf, fishing, hobby day' },
-        { id: 'forgot', emoji: '🗓️', name: 'Forgot Something', hint: 'Anniversary, plans, promise' },
-        { id: 'said', emoji: '🤦', name: 'Said Something Dumb', hint: '"You look fine", etc.' },
-        { id: 'trip', emoji: '✈️', name: 'Trip / Weekend Away', hint: 'Multi-day absence' }
-    ];
-    var DEP_EFFORT = [
-        { label: 'Quick (5 min or less)', hint: 'Took out trash, liked a post', base: 3, halfLife: 3 },
-        { label: 'Some effort (30-60 min)', hint: 'Cooked dinner, cleaned up', base: 12, halfLife: 7 },
-        { label: 'Real effort (1-2 hours)', hint: 'Date night, deep clean, project', base: 25, halfLife: 10 },
-        { label: 'Major effort (half day+)', hint: 'Took kids all day, planned a trip', base: 45, halfLife: 21 },
-        { label: 'Legendary (full day+)', hint: 'Surprise getaway, huge gesture', base: 60, halfLife: 28 }
-    ];
-    var WIT_DURATION = [
-        { label: 'A quick moment', hint: '"You look fine", eye roll', base: -8, rate: 2 },
-        { label: 'A few hours', hint: 'Gaming session, sports bar', base: -20, rate: 2 },
-        { label: 'Half a day', hint: 'Golf day, long hobby session', base: -35, rate: 2 },
-        { label: 'Full day', hint: 'All-day with the boys', base: -55, rate: 2 },
-        { label: 'Weekend', hint: 'Boys weekend, tournament', base: -80, rate: 2 },
-        { label: 'Multi-day trip', hint: 'Final 4, bachelor party', base: -150, rate: 1 }
-    ];
-    var DEP_MODIFIER = [
-        { label: 'She asked me to', hint: 'Still good but expected', mult: 0.7 },
-        { label: 'Unprompted — I just did it', hint: 'She didn\'t even have to ask', mult: 1.0 },
-        { label: 'She didn\'t even know she wanted it', hint: 'Anticipation — top tier', mult: 1.4 }
-    ];
-    var WIT_MODIFIER = [
-        { label: 'She won\'t even notice', hint: 'Barely registers', mult: 0.5 },
-        { label: 'Mildly annoyed', hint: 'The look. You know the look.', mult: 1.0 },
-        { label: 'Actually upset', hint: 'Silent treatment territory', mult: 1.4 },
-        { label: 'Sleeping on the couch', hint: 'You are in danger', mult: 2.0 }
+    var ALL_DEPOSITS = [
+        { emoji: '📱', name: 'Liked her post', value: 1, halfLife: 3 },
+        { emoji: '💬', name: 'Actually listened', value: 8, halfLife: 5 },
+        { emoji: '☕', name: 'Brought her coffee', value: 5, halfLife: 3 },
+        { emoji: '💬', name: 'Gave a compliment', value: 3, halfLife: 3 },
+        { emoji: '🐕', name: 'Walked the dog', value: 5, halfLife: 3 },
+        { emoji: '🛒', name: 'Grocery run', value: 8, halfLife: 5 },
+        { emoji: '🧹', name: 'Cleaned the house', value: 10, halfLife: 7 },
+        { emoji: '🍳', name: 'Made breakfast', value: 12, halfLife: 7 },
+        { emoji: '🍽️', name: 'Cooked dinner', value: 12, halfLife: 7 },
+        { emoji: '💐', name: 'Flowers (no reason)', value: 15, halfLife: 10 },
+        { emoji: '📝', name: 'Wrote her a note', value: 15, halfLife: 14 },
+        { emoji: '🛁', name: 'Drew her a bath', value: 15, halfLife: 10 },
+        { emoji: '💆', name: 'Gave her a massage', value: 20, halfLife: 10 },
+        { emoji: '🗑️', name: 'Trash (unasked)', value: 25, halfLife: 7 },
+        { emoji: '✨', name: 'Surprise date night', value: 30, halfLife: 14 },
+        { emoji: '👶', name: 'Took the kids', value: 40, halfLife: 14 },
+        { emoji: '✈️', name: 'Planned a trip', value: 60, halfLife: 28 },
     ];
 
-    var wizState = { type: null, step: 1, cat: null, effort: null, modifier: null, when: null, whenDate: null };
+    var ALL_WITHDRAWALS = [
+        { emoji: '😐', name: '"You look fine"', value: -10, rate: 2 },
+        { emoji: '📺', name: 'TV binge', value: -10, rate: 2 },
+        { emoji: '🍺', name: 'Happy hour', value: -15, rate: 2 },
+        { emoji: '🎮', name: '"One more game"', value: -20, rate: 2 },
+        { emoji: '⛳', name: 'Golf day', value: -25, rate: 2 },
+        { emoji: '🍺', name: "Boys' night out", value: -30, rate: 2 },
+        { emoji: '🎣', name: 'Fishing trip', value: -35, rate: 2 },
+        { emoji: '🏈', name: "Boys' weekend", value: -80, rate: 2 },
+        { emoji: '📅', name: 'Forgot anniversary', value: -150, rate: 1 },
+        { emoji: '🏀', name: "Final 4 w/ the boys", value: -200, rate: 1 },
+    ];
 
-    // Open wizard
-    addEntryBtn.addEventListener('click', function () {
-        wizState = { type: null, step: 1, cat: null, effort: null, modifier: null, when: null, whenDate: null };
-        customTitle.textContent = 'New Entry';
-        wizDesc.value = '';
-        wizDateInput.classList.add('hidden');
-        customModal.classList.remove('hidden');
-        renderWizardStep();
-    });
+    var pickerSelected = null; // the chosen preset
 
-    function renderWizardStep() {
-        var s = wizState.step;
-        wizPages.forEach(function (p, i) { p.classList.toggle('hidden', i !== s - 1); });
-        wizSteps.forEach(function (el, i) {
-            el.classList.remove('active', 'done');
-            if (i + 1 === s) el.classList.add('active');
-            if (i + 1 < s) el.classList.add('done');
-        });
-        wizBack.textContent = s === 1 ? 'Cancel' : 'Back';
-        // Only show Next on step 5 (as "Add Entry"). Steps 1-4 auto-advance on selection.
-        if (s === 5) {
-            wizNext.style.display = '';
-            wizNext.textContent = 'Add Entry';
-        } else {
-            wizNext.style.display = 'none';
-        }
+    // Render step 1: all presets
+    function renderPickerPresets() {
+        var depGrid = document.getElementById('picker-deposits');
+        var witGrid = document.getElementById('picker-withdrawals');
+        depGrid.innerHTML = '';
+        witGrid.innerHTML = '';
 
-        if (s === 1) renderWizType();
-        if (s === 2) renderWizCategories();
-        if (s === 3) renderWizEffort();
-        if (s === 4) renderWizModifier();
-        if (s === 5) renderWizReview();
-    }
-
-    // Step 1: Deposit or Withdrawal
-    function renderWizType() {
-        var depBtn = document.getElementById('wiz-type-dep');
-        var witBtn = document.getElementById('wiz-type-wit');
-        depBtn.classList.toggle('selected', wizState.type === 'deposit');
-        witBtn.classList.toggle('selected', wizState.type === 'withdrawal');
-        depBtn.onclick = function () { wizState.type = 'deposit'; wizState.step = 2; renderWizardStep(); };
-        witBtn.onclick = function () { wizState.type = 'withdrawal'; wizState.step = 2; renderWizardStep(); };
-    }
-
-    // Step 2: Category
-    function renderWizCategories() {
-        customTitle.textContent = wizState.type === 'deposit' ? 'Deposit' : 'Withdrawal';
-        var cats = wizState.type === 'deposit' ? DEPOSIT_CATS : WITHDRAW_CATS;
-        wizCategories.innerHTML = '';
-        cats.forEach(function (c) {
+        ALL_DEPOSITS.forEach(function (p, i) {
             var el = document.createElement('div');
-            el.className = 'wiz-cat' + (wizState.cat === c.id ? ' selected' : '');
-            el.innerHTML = '<div class="wiz-cat-emoji">' + c.emoji + '</div>'
-                + '<div class="wiz-cat-name">' + c.name + '</div>'
-                + '<div class="wiz-cat-hint">' + c.hint + '</div>';
+            el.className = 'picker-item';
+            el.innerHTML = '<div class="pi-emoji">' + p.emoji + '</div>'
+                + '<div class="pi-name">' + p.name + '</div>'
+                + '<div class="pi-val pos">+' + p.value + '</div>';
             el.addEventListener('click', function () {
-                wizState.cat = c.id;
-                wizState.catEmoji = c.emoji;
-                wizState.catName = c.name;
-                wizState.step = 3;
-                renderWizardStep();
+                pickerSelected = { type: 'deposit', preset: p };
+                showPickerStep2();
             });
-            wizCategories.appendChild(el);
+            depGrid.appendChild(el);
         });
-    }
 
-    // Step 3: Effort / Duration
-    function renderWizEffort() {
-        var opts = wizState.type === 'deposit' ? DEP_EFFORT : WIT_DURATION;
-        wizStep3Label.textContent = wizState.type === 'deposit' ? 'How much effort was this?' : 'How long is this?';
-        wizEffort.innerHTML = '';
-        opts.forEach(function (o, i) {
+        ALL_WITHDRAWALS.forEach(function (p, i) {
             var el = document.createElement('div');
-            el.className = 'wiz-option' + (wizState.effort === i ? ' selected' : '');
-            var valCls = wizState.type === 'deposit' ? 'pos' : 'neg';
-            var prefix = o.base >= 0 ? '+' : '';
-            el.innerHTML = '<div><div class="wiz-option-label">' + o.label + '</div>'
-                + '<div class="wiz-option-hint">' + o.hint + '</div></div>'
-                + '<div class="wiz-option-val ' + valCls + '">' + prefix + o.base + '</div>';
+            el.className = 'picker-item';
+            el.innerHTML = '<div class="pi-emoji">' + p.emoji + '</div>'
+                + '<div class="pi-name">' + p.name + '</div>'
+                + '<div class="pi-val neg">' + p.value + '</div>';
             el.addEventListener('click', function () {
-                wizState.effort = i;
-                wizState.effortData = o;
-                wizState.step = 4;
-                renderWizardStep();
+                pickerSelected = { type: 'withdrawal', preset: p };
+                showPickerStep2();
             });
-            wizEffort.appendChild(el);
+            witGrid.appendChild(el);
         });
     }
 
-    // Step 4: Modifier
-    function renderWizModifier() {
-        var opts = wizState.type === 'deposit' ? DEP_MODIFIER : WIT_MODIFIER;
-        wizStep4Label.textContent = wizState.type === 'deposit' ? 'Was it asked for?' : 'How mad is she?';
-        wizModifier.innerHTML = '';
-        opts.forEach(function (o, i) {
-            var el = document.createElement('div');
-            el.className = 'wiz-option' + (wizState.modifier === i ? ' selected' : '');
-            var multLabel = o.mult === 1.0 ? '1x' : o.mult + 'x';
-            el.innerHTML = '<div><div class="wiz-option-label">' + o.label + '</div>'
-                + '<div class="wiz-option-hint">' + o.hint + '</div></div>'
-                + '<div class="wiz-option-val">' + multLabel + '</div>';
-            el.addEventListener('click', function () {
-                wizState.modifier = i;
-                wizState.modData = o;
-                wizState.step = 5;
-                renderWizardStep();
-            });
-            wizModifier.appendChild(el);
-        });
+    function showPickerStep2() {
+        document.getElementById('picker-step-1').classList.add('hidden');
+        document.getElementById('picker-step-2').classList.remove('hidden');
+        var p = pickerSelected.preset;
+        var cls = pickerSelected.type === 'deposit' ? 'pos' : 'neg';
+        var prefix = p.value >= 0 ? '+' : '';
+        document.getElementById('picker-selected').innerHTML =
+            '<span style="font-size:24px;">' + p.emoji + '</span> '
+            + '<strong>' + p.name + '</strong> '
+            + '<span class="' + cls + '" style="font-weight:700;">' + prefix + p.value + '</span>';
+        document.getElementById('picker-date').classList.add('hidden');
     }
 
-    function calcWizValue() {
-        if (!wizState.effortData || !wizState.modData) return 0;
-        return Math.round(wizState.effortData.base * wizState.modData.mult);
-    }
-
-    function getWizTimestamp() {
-        if (wizState.when === 'now') return Date.now();
-        if (wizState.when === 'yesterday') {
-            var y = new Date(); y.setDate(y.getDate() - 1);
-            return y.getTime();
-        }
-        if (wizState.when === 'tomorrow') {
-            var t = new Date(); t.setDate(t.getDate() + 1);
-            return t.getTime();
-        }
-        if (wizState.when === 'custom' && wizState.whenDate) {
-            return new Date(wizState.whenDate).getTime();
-        }
+    function getPickerTimestamp(when, dateVal) {
+        if (when === 'now') return Date.now();
+        if (when === 'yesterday') { var y = new Date(); y.setDate(y.getDate() - 1); return y.getTime(); }
+        if (when === 'tomorrow') { var t = new Date(); t.setDate(t.getDate() + 1); return t.getTime(); }
+        if (when === 'custom' && dateVal) return new Date(dateVal).getTime();
         return Date.now();
     }
 
-    // Step 5: When + Review
-    function renderWizReview() {
-        var val = calcWizValue();
-        var prefix = val >= 0 ? '+' : '';
-        var cls = val >= 0 ? 'pos' : 'neg';
-        wizEstimate.innerHTML = '<div class="wiz-est-num ' + cls + '">' + prefix + val + '</div>'
-            + '<div class="wiz-est-label">estimated babe cred</div>';
+    // Search/filter
+    var pickerSearch = document.getElementById('picker-search');
+    var pickerResults = document.getElementById('picker-results');
+    var pickerCustom = document.getElementById('picker-custom');
+    var pickerCustomDep = document.getElementById('picker-custom-dep');
+    var pickerCustomWit = document.getElementById('picker-custom-wit');
 
-        // When buttons
-        var whenBtns = document.querySelectorAll('.wiz-when');
-        whenBtns.forEach(function (btn) {
-            btn.classList.toggle('selected', wizState.when === btn.dataset.when);
-            btn.onclick = function () {
-                wizState.when = this.dataset.when;
-                if (this.dataset.when === 'custom') {
-                    wizDateInput.classList.remove('hidden');
-                    try { wizDateInput.showPicker(); } catch (e) { wizDateInput.focus(); }
-                } else {
-                    wizDateInput.classList.add('hidden');
-                }
-                renderWizReview();
-            };
+    pickerSearch.addEventListener('input', function () {
+        var q = this.value.trim().toLowerCase();
+        if (!q) {
+            pickerResults.classList.remove('hidden');
+            pickerCustom.classList.add('hidden');
+            renderPickerPresets();
+            return;
+        }
+
+        var depMatches = ALL_DEPOSITS.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0; });
+        var witMatches = ALL_WITHDRAWALS.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0; });
+
+        if (depMatches.length === 0 && witMatches.length === 0) {
+            pickerResults.classList.add('hidden');
+            pickerCustom.classList.remove('hidden');
+            return;
+        }
+
+        pickerResults.classList.remove('hidden');
+        pickerCustom.classList.add('hidden');
+
+        var depGrid = document.getElementById('picker-deposits');
+        var witGrid = document.getElementById('picker-withdrawals');
+        depGrid.innerHTML = '';
+        witGrid.innerHTML = '';
+
+        depMatches.forEach(function (p) {
+            var el = document.createElement('div');
+            el.className = 'picker-item';
+            el.innerHTML = '<div class="pi-emoji">' + p.emoji + '</div><div class="pi-name">' + p.name + '</div><div class="pi-val pos">+' + p.value + '</div>';
+            el.addEventListener('click', function () { pickerSelected = { type: 'deposit', preset: p }; showPickerStep2(); });
+            depGrid.appendChild(el);
         });
 
-        wizDateInput.onchange = function () {
-            wizState.whenDate = this.value;
-        };
-
-        var lines = [];
-        lines.push('Type: ' + (wizState.type === 'deposit' ? '+ Deposit' : '− Withdrawal'));
-        lines.push('Category: ' + (wizState.catEmoji || '') + ' ' + (wizState.catName || ''));
-        lines.push('Effort: ' + (wizState.effortData ? wizState.effortData.label : ''));
-        lines.push('Modifier: ' + (wizState.modData ? wizState.modData.label + ' (' + wizState.modData.mult + 'x)' : ''));
-        if (wizState.type === 'deposit') {
-            lines.push('Half-life: ' + (wizState.effortData ? wizState.effortData.halfLife + ' days' : ''));
-        } else {
-            lines.push('Recovery: +' + (wizState.effortData ? wizState.effortData.rate : 2) + '/day');
-        }
-        wizSummary.innerHTML = lines.join('<br>');
-    }
-
-    // Navigation
-    wizBack.addEventListener('click', function () {
-        if (wizState.step === 1) {
-            customModal.classList.add('hidden');
-        } else {
-            wizState.step--;
-            renderWizardStep();
-        }
+        witMatches.forEach(function (p) {
+            var el = document.createElement('div');
+            el.className = 'picker-item';
+            el.innerHTML = '<div class="pi-emoji">' + p.emoji + '</div><div class="pi-name">' + p.name + '</div><div class="pi-val neg">' + p.value + '</div>';
+            el.addEventListener('click', function () { pickerSelected = { type: 'withdrawal', preset: p }; showPickerStep2(); });
+            witGrid.appendChild(el);
+        });
     });
 
-    wizNext.addEventListener('click', function () {
-        // Only fires on step 5 (Add Entry)
-        // Default to "now" if no when selected
-        if (wizState.when === null) wizState.when = 'now';
-        if (wizState.when === 'custom' && !wizState.whenDate) return;
+    // Custom entry from search text
+    function logCustomFromSearch(type) {
+        var desc = pickerSearch.value.trim();
+        if (!desc) return;
+        var defaultVal = type === 'deposit' ? 10 : -15;
+        var halfLife = 7;
+        var rate = 2;
+        pickerSelected = {
+            type: type,
+            preset: {
+                emoji: '✏️',
+                name: desc,
+                value: defaultVal,
+                halfLife: halfLife,
+                rate: rate
+            }
+        };
+        showPickerStep2();
+    }
 
-        var val = calcWizValue();
-        var desc = wizDesc.value.trim() || wizState.catName;
-        var emoji = wizState.catEmoji || '✏️';
-        var ts = getWizTimestamp();
-        if (wizState.type === 'deposit') {
-            CredEngine.addDepositAt(desc, emoji, Math.abs(val), wizState.effortData.halfLife, ts);
+    pickerCustomDep.addEventListener('click', function () { logCustomFromSearch('deposit'); });
+    pickerCustomWit.addEventListener('click', function () { logCustomFromSearch('withdrawal'); });
+
+    // Open picker
+    addEntryBtn.addEventListener('click', function () {
+        pickerSelected = null;
+        pickerSearch.value = '';
+        pickerResults.classList.remove('hidden');
+        pickerCustom.classList.add('hidden');
+        document.getElementById('picker-step-1').classList.remove('hidden');
+        document.getElementById('picker-step-2').classList.add('hidden');
+        customModal.classList.remove('hidden');
+        renderPickerPresets();
+    });
+
+    // Cancel
+    document.getElementById('picker-cancel').addEventListener('click', function () {
+        customModal.classList.add('hidden');
+    });
+
+    // Back from step 2
+    document.getElementById('picker-back').addEventListener('click', function () {
+        document.getElementById('picker-step-2').classList.add('hidden');
+        document.getElementById('picker-step-1').classList.remove('hidden');
+    });
+
+    // When buttons — tap to log immediately
+    var pickerDateInput = document.getElementById('picker-date');
+    document.querySelectorAll('.picker-when').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var when = this.dataset.when;
+            if (when === 'custom') {
+                pickerDateInput.classList.remove('hidden');
+                try { pickerDateInput.showPicker(); } catch (e) { pickerDateInput.focus(); }
+                pickerDateInput.onchange = function () {
+                    var ts = getPickerTimestamp('custom', this.value);
+                    logPickerEntry(ts);
+                };
+                return;
+            }
+            var ts = getPickerTimestamp(when);
+            logPickerEntry(ts);
+        });
+    });
+
+    function logPickerEntry(ts) {
+        if (!pickerSelected) return;
+        var p = pickerSelected.preset;
+        if (pickerSelected.type === 'deposit') {
+            CredEngine.addDepositAt(p.name, p.emoji, p.value, p.halfLife, ts);
         } else {
-            CredEngine.addWithdrawalAt(desc, emoji, val, wizState.effortData.rate || 2, ts);
+            CredEngine.addWithdrawalAt(p.name, p.emoji, p.value, p.rate || 2, ts);
         }
         customModal.classList.add('hidden');
         renderAll();
-    });
+    }
 
     // --- Ledger ---
 
