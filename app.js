@@ -180,6 +180,10 @@ function openFullImage(src) {
                 Chat.send('BabeCredBot', 'NEW — The system now tracks Boston sports and weather. Celtics, Bruins, Sox, Pats, golf weather, and every major event auto-suggest in your feed. No work tomorrow? Gaming with the boys is on the menu. Plan ahead or pay the price.', 0);
                 localStorage.setItem('babecred_bot_v1', '1');
             }
+            if (!localStorage.getItem('babecred_bot_v2')) {
+                Chat.send('BabeCredBot', 'UPDATE — Tap the 👸 in the header to set up Babe Info. Enter her anniversary, birthday, and any other dates you can\'t afford to forget. The system will warn you days in advance. Valentine\'s and Mother\'s Day are auto-tracked. Also new: leaderboard is live. Top 5 = Golf Ready ⛳. Bottom 5 = Doghouse 🛋️. Your cred is public now.', 0);
+                localStorage.setItem('babecred_bot_v2', '1');
+            }
         } catch (e) {
             console.warn('Chat init failed:', e);
         }
