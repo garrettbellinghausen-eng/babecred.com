@@ -146,7 +146,7 @@ function openFullImage(src) {
 
     var commentText = document.getElementById('comment-text');
     var commentInsight = document.getElementById('comment-insight');
-    var saItems = document.getElementById('sa-items');
+    var qaStrip = document.getElementById('qa-strip');
 
     // Auto sign-on if cookie exists (skip onboarding)
     var existing = getCookie(COOKIE_NAME);
@@ -172,67 +172,57 @@ function openFullImage(src) {
         var trendPrefix = trend.net >= 0 ? '▲' : '▼';
         balanceSub.textContent = trendPrefix + ' ' + Math.abs(Math.round(trend.net)) + ' this week';
 
-        // Commentary
+        // Commentary (inside balance card now)
         commentText.textContent = CommentEngine.getComment(rounded);
         var ledger = CredEngine.getLedgerWithValues();
         commentInsight.innerHTML = CommentEngine.getInsight(rounded, ledger);
 
-        // Suggested actions
+        // Quick Actions strip (Coming Up + Recommendations merged)
         var suggestions = CommentEngine.getSuggestions(rounded);
-        var html = '';
-        suggestions.forEach(function (s) {
-            var valCls = s.type === 'deposit' ? 'pos' : 'neg';
-            html += '<div class="sa-item" data-sa-type="' + s.type + '" data-sa-emoji="' + s.emoji + '" data-sa-name="' + s.name + '" data-sa-val="' + s.val + '">'
-                + '<div class="sa-emoji">' + s.emoji + '</div>'
-                + '<div class="sa-name">' + s.name + '</div>'
-                + '<div class="sa-val ' + valCls + '">' + s.val + '</div>'
-                + '</div>';
-        });
-        saItems.innerHTML = html;
+        var allItems = [];
 
-        // Bind suggestion clicks -> open wizard pre-filled
-        saItems.querySelectorAll('.sa-item').forEach(function (item, idx) {
-            item.addEventListener('click', function () {
-                var s = suggestions[idx];
-                if (s.type === 'deposit') {
-                    CredEngine.addDeposit(s.name, s.emoji, s.value, s.halfLife);
-                } else {
-                    CredEngine.addWithdrawal(s.name, s.emoji, s.value, s.rate || 2);
-                }
-                // Flash feedback
-                item.style.background = 'rgba(232,163,23,0.3)';
-                setTimeout(function () { item.style.background = ''; }, 300);
-                renderAll();
-            });
-        });
-
-        // Coming Up section
-        var comingUpSection = document.getElementById('coming-up-section');
-        var comingUpItems = document.getElementById('coming-up-items');
-
+        // Fetch coming up events, then render combined strip
         ComingUp.getEvents(function (events) {
-            if (events.length === 0) {
-                comingUpSection.classList.add('hidden');
-                return;
-            }
-            comingUpSection.classList.remove('hidden');
-            var cuHtml = '';
+            // Coming Up items first (with cu class for mustard tint)
             events.forEach(function (e) {
-                cuHtml += '<div class="sa-item cu-item">'
-                    + '<div class="sa-emoji">' + e.emoji + '</div>'
-                    + '<div class="sa-name">' + e.name + '</div>'
-                    + '<div class="sa-day">' + (e.day || '') + '</div>'
-                    + '<div class="sa-val neg">' + e.val + '</div>'
+                allItems.push({
+                    emoji: e.emoji, name: e.name, day: e.day || '',
+                    val: e.val, type: e.type, value: e.value,
+                    halfLife: null, rate: e.rate || 2, isCU: true
+                });
+            });
+            // Then regular recommendations
+            suggestions.forEach(function (s) {
+                allItems.push({
+                    emoji: s.emoji, name: s.name, day: '',
+                    val: s.val, type: s.type, value: s.value,
+                    halfLife: s.halfLife, rate: s.rate || 2, isCU: false
+                });
+            });
+
+            var html = '';
+            allItems.forEach(function (item) {
+                var valCls = item.type === 'deposit' ? 'pos' : 'neg';
+                var cuClass = item.isCU ? ' cu' : '';
+                html += '<div class="qa-item' + cuClass + '">'
+                    + '<div class="qa-emoji">' + item.emoji + '</div>'
+                    + '<div class="qa-name">' + item.name + '</div>'
+                    + (item.day ? '<div class="qa-day">' + item.day + '</div>' : '')
+                    + '<div class="qa-val ' + valCls + '">' + item.val + '</div>'
                     + '</div>';
             });
-            comingUpItems.innerHTML = cuHtml;
+            qaStrip.innerHTML = html;
 
-            comingUpItems.querySelectorAll('.cu-item').forEach(function (item, idx) {
-                item.addEventListener('click', function () {
-                    var e = events[idx];
-                    CredEngine.addWithdrawal(e.name, e.emoji, e.value, e.rate || 2);
-                    item.style.background = 'rgba(232,163,23,0.3)';
-                    setTimeout(function () { item.style.background = ''; }, 300);
+            qaStrip.querySelectorAll('.qa-item').forEach(function (el, idx) {
+                el.addEventListener('click', function () {
+                    var a = allItems[idx];
+                    if (a.type === 'deposit') {
+                        CredEngine.addDeposit(a.name, a.emoji, a.value, a.halfLife || 7);
+                    } else {
+                        CredEngine.addWithdrawal(a.name, a.emoji, a.value, a.rate || 2);
+                    }
+                    el.style.background = 'rgba(232,163,23,0.3)';
+                    setTimeout(function () { el.style.background = ''; }, 300);
                     renderAll();
                 });
             });

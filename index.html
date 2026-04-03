@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
     <!-- ONBOARDING -->
@@ -151,30 +151,26 @@
         <div class="main-split">
             <!-- LEFT: BALANCE SHEET -->
             <div class="balance-side">
-                <div class="balance-header">
-                    <div class="balance-label">Current Babe Cred Balance</div>
-                    <div class="balance-number" id="balance-number">0</div>
-                    <div class="balance-sub" id="balance-sub"></div>
+                <!-- ZONE 1: Balance Card -->
+                <div class="balance-card">
+                    <div class="bc-top">
+                        <div class="bc-balance">
+                            <div class="balance-label">Current Babe Cred Balance</div>
+                            <div class="balance-number" id="balance-number">0</div>
+                            <div class="balance-sub" id="balance-sub"></div>
+                        </div>
+                        <button class="bc-share" id="share-btn" title="Share">📤</button>
+                    </div>
+                    <div class="bc-comment" id="comment-text"></div>
+                    <div class="bc-insight" id="comment-insight"></div>
                 </div>
 
-                <div class="commentary" id="commentary">
-                    <div class="comment-text" id="comment-text"></div>
-                    <div class="comment-insight" id="comment-insight"></div>
-                    <button class="share-btn" id="share-btn">📤 Share Your Balance</button>
-                </div>
-
-                <div class="coming-up-section hidden" id="coming-up-section">
-                    <div class="sa-label">📅 Coming Up</div>
-                    <div class="sa-items" id="coming-up-items"></div>
-                </div>
-
-                <div class="suggested-actions" id="suggested-actions">
-                    <div class="sa-label">Recommended Actions</div>
-                    <div class="sa-items" id="sa-items"></div>
-                </div>
-
-                <div class="add-entry-bar">
-                    <button class="add-entry-btn" id="add-entry-btn">+ Add Entry</button>
+                <!-- ZONE 2: Quick Actions (Coming Up + Recommendations merged) -->
+                <div class="quick-actions">
+                    <div class="qa-strip" id="qa-strip">
+                        <!-- Coming Up items injected first, then recommendations -->
+                    </div>
+                    <button class="qa-add-btn" id="add-entry-btn">+</button>
                 </div>
 
                 <div class="ledger" id="ledger">
@@ -282,10 +278,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="cred-engine.js?v=14"></script>
-    <script src="comments.js?v=14"></script>
-    <script src="coming-up.js?v=14"></script>
-    <script src="chat.js?v=14"></script>
-    <script src="app.js?v=14"></script>
+    <script src="cred-engine.js?v=15"></script>
+    <script src="comments.js?v=15"></script>
+    <script src="coming-up.js?v=15"></script>
+    <script src="chat.js?v=15"></script>
+    <script src="app.js?v=15"></script>
 </body>
 </html>
