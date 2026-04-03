@@ -696,7 +696,7 @@ function openFullImage(src) {
             content = (msg.text ? sanitize(msg.text) + '<br>' : '')
                 + '<img src="' + sanitize(msg.image) + '" class="chat-img" onclick="openFullImage(this.src)">';
         } else {
-            content = sanitize(msg.text);
+            content = sanitize(msg.text).replace(/@(\w+)/g, '<span class="chat-mention">@$1</span>');
         }
         el.innerHTML = '<span class="cm-time">' + sanitize(t) + '</span>'
             + '<span class="cm-name nc' + c + '">' + sanitize(msg.name) + '</span>'
@@ -711,9 +711,110 @@ function openFullImage(src) {
         e.preventDefault();
         var text = chatInput.value.trim();
         if (!text || !userName) return;
+        closeMentionDropdown();
         Chat.send(userName, text, Math.round(CredEngine.calculateBalance()));
         chatInput.value = '';
         chatInput.focus();
+    });
+
+    // --- @ Mentions ---
+
+    var mentionDropdown = document.getElementById('mention-dropdown');
+    var allKnownUsers = []; // populated from leaderboard
+    var mentionActive = false;
+    var mentionStart = -1;
+    var mentionActiveIdx = 0;
+
+    function updateKnownUsers(users) {
+        allKnownUsers = users;
+    }
+
+    function closeMentionDropdown() {
+        mentionDropdown.classList.add('hidden');
+        mentionDropdown.innerHTML = '';
+        mentionActive = false;
+        mentionStart = -1;
+    }
+
+    function showMentionDropdown(query) {
+        var filtered = allKnownUsers.filter(function (u) {
+            return u.name.toLowerCase().indexOf(query.toLowerCase()) >= 0 && u.name !== userName;
+        }).slice(0, 8);
+
+        if (filtered.length === 0) {
+            closeMentionDropdown();
+            return;
+        }
+
+        mentionActiveIdx = 0;
+        var html = '';
+        filtered.forEach(function (u, i) {
+            var prefix = u.balance >= 0 ? '+' : '';
+            var cls = u.balance >= 0 ? 'pos' : 'neg';
+            html += '<div class="mention-item' + (i === 0 ? ' active' : '') + '" data-name="' + u.name + '">'
+                + '<span class="mention-name">@' + u.name + '</span>'
+                + '<span class="mention-score ' + cls + '">' + prefix + u.balance + '</span>'
+                + '</div>';
+        });
+        mentionDropdown.innerHTML = html;
+        mentionDropdown.classList.remove('hidden');
+
+        mentionDropdown.querySelectorAll('.mention-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                insertMention(this.dataset.name);
+            });
+        });
+    }
+
+    function insertMention(name) {
+        var val = chatInput.value;
+        var before = val.substring(0, mentionStart);
+        var after = val.substring(chatInput.selectionStart);
+        chatInput.value = before + '@' + name + ' ' + after;
+        closeMentionDropdown();
+        chatInput.focus();
+    }
+
+    chatInput.addEventListener('input', function () {
+        var val = this.value;
+        var pos = this.selectionStart;
+        // Find the @ before cursor
+        var textBeforeCursor = val.substring(0, pos);
+        var atIdx = textBeforeCursor.lastIndexOf('@');
+        if (atIdx >= 0 && (atIdx === 0 || val[atIdx - 1] === ' ')) {
+            var query = textBeforeCursor.substring(atIdx + 1);
+            if (query.indexOf(' ') === -1 && query.length <= 24) {
+                mentionActive = true;
+                mentionStart = atIdx;
+                showMentionDropdown(query);
+                return;
+            }
+        }
+        closeMentionDropdown();
+    });
+
+    chatInput.addEventListener('keydown', function (e) {
+        if (!mentionActive) return;
+        var items = mentionDropdown.querySelectorAll('.mention-item');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            items[mentionActiveIdx].classList.remove('active');
+            mentionActiveIdx = (mentionActiveIdx + 1) % items.length;
+            items[mentionActiveIdx].classList.add('active');
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            items[mentionActiveIdx].classList.remove('active');
+            mentionActiveIdx = (mentionActiveIdx - 1 + items.length) % items.length;
+            items[mentionActiveIdx].classList.add('active');
+        } else if (e.key === 'Enter' && mentionActive) {
+            e.preventDefault();
+            e.stopPropagation();
+            insertMention(items[mentionActiveIdx].dataset.name);
+        } else if (e.key === 'Escape') {
+            closeMentionDropdown();
+        }
     });
 
     // --- Photo upload ---
@@ -890,6 +991,7 @@ function openFullImage(src) {
                     users.push(child.val());
                 });
                 renderLeaderboard(users);
+                updateKnownUsers(users);
             });
         } catch (e) {}
     }
