@@ -34,7 +34,12 @@ const CredEngine = (function () {
     // --- Decay Math ---
 
     function daysElapsed(timestamp) {
-        return Math.max(0, (Date.now() - timestamp) / MS_PER_DAY);
+        // Calendar days — yesterday = 1 full day, regardless of hour
+        var now = new Date();
+        var then = new Date(timestamp);
+        var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        var thenStart = new Date(then.getFullYear(), then.getMonth(), then.getDate()).getTime();
+        return Math.max(0, (todayStart - thenStart) / MS_PER_DAY);
     }
 
     function depositCurrentValue(entry) {
@@ -65,15 +70,23 @@ const CredEngine = (function () {
 
     // --- Projected value at a future date ---
 
+    function calendarDaysBetween(ts1, ts2) {
+        var d1 = new Date(ts1);
+        var d2 = new Date(ts2);
+        var start1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate()).getTime();
+        var start2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate()).getTime();
+        return Math.max(0, (start2 - start1) / MS_PER_DAY);
+    }
+
     function depositValueAtDate(entry, futureDate) {
-        const days = Math.max(0, (futureDate - entry.timestamp) / MS_PER_DAY);
+        const days = calendarDaysBetween(entry.timestamp, futureDate);
         var mult = (typeof BabeInfo !== 'undefined') ? BabeInfo.getKidsMultiplier() : 1;
         var effectiveHalfLife = entry.halfLife * mult;
         return entry.value * Math.pow(0.5, days / effectiveHalfLife);
     }
 
     function withdrawalValueAtDate(entry, futureDate) {
-        const days = Math.max(0, (futureDate - entry.timestamp) / MS_PER_DAY);
+        const days = calendarDaysBetween(entry.timestamp, futureDate);
         return Math.min(0, entry.value + (days * entry.recoveryRate));
     }
 
