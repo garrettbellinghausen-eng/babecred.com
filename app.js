@@ -528,91 +528,33 @@ function openFullImage(src) {
                 : '<div class="lr-current ' + (isPos ? 'pos' : 'neg') + '">' + prefix + Math.round(e.currentValue) + '</div>'
                   + '<div class="lr-original">was ' + origPrefix + e.value + '</div>';
 
-            html += '<div class="ledger-swipe" data-entry-id="' + e.id + '">'
+            html += '<div class="ledger-row-wrap" data-entry-id="' + e.id + '">'
                 + '<div class="' + rowClass + '">'
                 + '<div class="lr-left">'
                 + '<span class="lr-icon">' + (e.emoji || '•') + '</span>'
                 + '<div><div class="lr-desc">' + sanitize(e.desc) + '</div>'
                 + '<div class="lr-date">' + dateStr + '</div></div>'
                 + '</div>'
-                + '<div class="lr-right">' + valueDisplay + '</div>'
+                + '<div class="lr-right">'
+                + valueDisplay
+                + '<button class="lr-x" data-id="' + e.id + '">✕</button>'
                 + '</div>'
-                + '<div class="lr-delete">Delete</div>'
-                + '</div>';
+                + '</div></div>';
         }
         ledgerRows.innerHTML = html;
-        bindSwipeToDelete();
+        bindDeleteButtons();
     }
 
     // --- Swipe to delete ---
 
-    function closeAllSwipes() {
-        ledgerRows.querySelectorAll('.ledger-swipe .ledger-row').forEach(function (r) {
-            r.style.transition = 'transform 0.2s ease';
-            r.style.transform = 'translateX(0)';
-        });
-    }
-
-    function bindSwipeToDelete() {
-        var rows = ledgerRows.querySelectorAll('.ledger-swipe');
-        rows.forEach(function (row) {
-            var startX = 0, currentX = 0, swiping = false;
-            var rowInner = row.querySelector('.ledger-row');
-            var deleteBtn = row.querySelector('.lr-delete');
-            var threshold = 70;
-            var isOpen = false;
-
-            function onStart(x) {
-                // Close any other open swipes first
-                closeAllSwipes();
-                swiping = true;
-                startX = x;
-                currentX = 0;
-                isOpen = false;
-                rowInner.style.transition = 'none';
-            }
-            function onMove(x) {
-                if (!swiping) return;
-                currentX = Math.min(0, x - startX);
-                if (currentX < -threshold) currentX = -threshold - (currentX + threshold) * 0.2;
-                rowInner.style.transform = 'translateX(' + currentX + 'px)';
-            }
-            function onEnd() {
-                if (!swiping) return;
-                swiping = false;
-                rowInner.style.transition = 'transform 0.2s ease';
-                if (currentX < -threshold * 0.6) {
-                    rowInner.style.transform = 'translateX(-' + threshold + 'px)';
-                    isOpen = true;
-                } else {
-                    rowInner.style.transform = 'translateX(0)';
-                    isOpen = false;
-                }
-            }
-
-            // Tap on the row when open = close it
-            rowInner.addEventListener('click', function () {
-                if (isOpen) {
-                    rowInner.style.transition = 'transform 0.2s ease';
-                    rowInner.style.transform = 'translateX(0)';
-                    isOpen = false;
-                }
-            });
-
-            rowInner.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX); }, { passive: true });
-            rowInner.addEventListener('touchmove', function (e) { onMove(e.touches[0].clientX); }, { passive: true });
-            rowInner.addEventListener('touchend', onEnd);
-            rowInner.addEventListener('mousedown', function (e) { e.preventDefault(); onStart(e.clientX); });
-            document.addEventListener('mousemove', function (e) { onMove(e.clientX); });
-            document.addEventListener('mouseup', onEnd);
-
-            deleteBtn.addEventListener('click', function (e) {
+    function bindDeleteButtons() {
+        ledgerRows.querySelectorAll('.lr-x').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                var id = row.dataset.entryId;
-                row.style.transition = 'opacity 0.2s, max-height 0.2s';
+                var id = this.dataset.id;
+                var row = this.closest('.ledger-row-wrap');
+                row.style.transition = 'opacity 0.2s';
                 row.style.opacity = '0';
-                row.style.maxHeight = '0';
-                row.style.overflow = 'hidden';
                 setTimeout(function () { CredEngine.deleteEntry(id); renderAll(); }, 200);
             });
         });

@@ -976,43 +976,26 @@ body::before {
     flex: 1;
     overflow-y: auto;
 }
-/* Swipe-to-delete wrapper */
-.ledger-swipe {
-    position: relative;
-    overflow: hidden;
-}
 .ledger-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 7px 14px;
     border-bottom: 1px solid var(--border-light);
-    background: var(--cream);
-    position: relative;
-    z-index: 1;
-    touch-action: pan-y;
-    cursor: default;
 }
 .ledger-row:hover { background: rgba(232,163,23,0.06); }
-.lr-delete {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 70px;
-    background: var(--red);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+.lr-x {
+    background: none;
+    border: none;
+    color: var(--olive);
+    font-size: 12px;
     cursor: pointer;
-    z-index: 0;
+    padding: 4px 6px;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+    margin-left: 8px;
 }
-.lr-delete:hover { background: #aa1100; }
+.lr-x:hover, .lr-x:active { opacity: 1; color: var(--red); }
 .lr-left { display: flex; align-items: center; gap: 8px; }
 .lr-icon { font-size: 14px; }
 .lr-desc { font-size: 11px; }
