@@ -629,6 +629,8 @@ body::before {
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    padding-right: 14px;
+    padding-bottom: 4px;
 }
 .sa-items::-webkit-scrollbar { display: none; }
 .sa-item {
