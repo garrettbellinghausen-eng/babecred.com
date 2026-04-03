@@ -462,29 +462,56 @@ function openFullImage(src) {
 
     // --- Ledger ---
 
+    function formatFutureDate(ts) {
+        var d = new Date(ts);
+        var now = new Date();
+        var diffDays = Math.ceil((ts - now.getTime()) / 86400000);
+        if (diffDays <= 1) return 'Tomorrow';
+        if (diffDays <= 7) return 'In ' + diffDays + ' days';
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
     function renderLedger() {
         var entries = CredEngine.getLedgerWithValues();
+        var proj = CredEngine.calculateProjectedBalance();
         if (entries.length === 0) {
             ledgerRows.innerHTML = '<div class="ledger-empty">No transactions yet. Tap + Add Entry to start.</div>';
             return;
         }
         var html = '';
+        var hasScheduled = entries.some(function (e) { return e.scheduled; });
+
+        if (hasScheduled) {
+            var projPrefix = proj.projected >= 0 ? '+' : '';
+            var projCls = proj.projected >= 0 ? 'pos' : 'neg';
+            html += '<div class="projected-bar">'
+                + '<span>Projected balance after scheduled: </span>'
+                + '<strong class="' + projCls + '">' + projPrefix + Math.round(proj.projected) + '</strong>'
+                + '</div>';
+        }
+
         for (var i = 0; i < entries.length; i++) {
             var e = entries[i];
             var isPos = e.currentValue >= 0;
             var prefix = isPos ? '+' : '';
             var origPrefix = e.value >= 0 ? '+' : '';
+            var rowClass = e.scheduled ? 'ledger-row scheduled' : 'ledger-row';
+            var dateStr = e.scheduled ? '📅 ' + formatFutureDate(e.timestamp) : formatDate(e.timestamp);
+            var valueDisplay = e.scheduled
+                ? '<div class="lr-current ' + (e.value >= 0 ? 'pos' : 'neg') + '">' + (e.value >= 0 ? '+' : '') + e.value + '</div>'
+                  + '<div class="lr-original">scheduled</div>'
+                : '<div class="lr-current ' + (isPos ? 'pos' : 'neg') + '">' + prefix + Math.round(e.currentValue) + '</div>'
+                  + '<div class="lr-original">was ' + origPrefix + e.value + '</div>';
+
             html += '<div class="ledger-swipe" data-entry-id="' + e.id + '">'
-                + '<div class="ledger-row">'
+                + '<div class="' + rowClass + '">'
                 + '<div class="lr-left">'
                 + '<span class="lr-icon">' + (e.emoji || '•') + '</span>'
                 + '<div><div class="lr-desc">' + sanitize(e.desc) + '</div>'
-                + '<div class="lr-date">' + formatDate(e.timestamp) + '</div></div>'
+                + '<div class="lr-date">' + dateStr + '</div></div>'
                 + '</div>'
-                + '<div class="lr-right">'
-                + '<div class="lr-current ' + (isPos ? 'pos' : 'neg') + '">' + prefix + Math.round(e.currentValue) + '</div>'
-                + '<div class="lr-original">was ' + origPrefix + e.value + '</div>'
-                + '</div></div>'
+                + '<div class="lr-right">' + valueDisplay + '</div>'
+                + '</div>'
                 + '<div class="lr-delete">Delete</div>'
                 + '</div>';
         }

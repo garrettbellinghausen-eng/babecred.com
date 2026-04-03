@@ -929,6 +929,30 @@ body::before {
 .lr-current { font-weight: 700; font-size: 11px; }
 .lr-current.pos { color: var(--green); }
 .lr-current.neg { color: var(--burnt); }
+/* Scheduled (future) entries */
+.ledger-row.scheduled {
+    opacity: 0.6;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 8px,
+        rgba(232,163,23,0.04) 8px,
+        rgba(232,163,23,0.04) 16px
+    );
+    border-left: 3px solid var(--mustard);
+}
+.projected-bar {
+    padding: 8px 14px;
+    background: rgba(232,163,23,0.08);
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--olive);
+    text-align: center;
+}
+.projected-bar strong { font-size: 12px; }
+.projected-bar .pos { color: var(--green); }
+.projected-bar .neg { color: var(--burnt); }
+
 .ledger-empty {
     padding: 24px;
     text-align: center;

@@ -47,7 +47,12 @@ const CredEngine = (function () {
         return Math.min(0, entry.value + (days * entry.recoveryRate));
     }
 
+    function isFuture(entry) {
+        return entry.timestamp > Date.now();
+    }
+
     function entryCurrentValue(entry) {
+        if (isFuture(entry)) return 0; // scheduled — doesn't affect balance yet
         if (entry.type === 'deposit') return depositCurrentValue(entry);
         if (entry.type === 'withdrawal') return withdrawalCurrentValue(entry);
         return 0;
@@ -164,13 +169,44 @@ const CredEngine = (function () {
 
     function getLedgerWithValues() {
         const ledger = loadLedger();
+        const now = Date.now();
         return ledger
-            .map(entry => ({
-                ...entry,
-                currentValue: Math.round(entryCurrentValue(entry) * 10) / 10
-            }))
-            .filter(entry => Math.abs(entry.currentValue) >= 0.1)
-            .sort((a, b) => b.timestamp - a.timestamp);
+            .map(entry => {
+                const scheduled = entry.timestamp > now;
+                return {
+                    ...entry,
+                    scheduled: scheduled,
+                    currentValue: scheduled ? entry.value : Math.round(entryCurrentValue(entry) * 10) / 10
+                };
+            })
+            .filter(entry => entry.scheduled || Math.abs(entry.currentValue) >= 0.1)
+            .sort((a, b) => {
+                // Scheduled entries first, then by timestamp descending
+                if (a.scheduled && !b.scheduled) return -1;
+                if (!a.scheduled && b.scheduled) return 1;
+                return b.timestamp - a.timestamp;
+            });
+    }
+
+    // --- Projected balance including scheduled entries ---
+
+    function calculateProjectedBalance() {
+        const ledger = loadLedger();
+        let current = 0;
+        let scheduled = 0;
+        const now = Date.now();
+        for (const entry of ledger) {
+            if (entry.timestamp > now) {
+                scheduled += entry.value;
+            } else {
+                current += entryCurrentValue(entry);
+            }
+        }
+        return {
+            current: Math.round(current * 10) / 10,
+            scheduled: Math.round(scheduled * 10) / 10,
+            projected: Math.round((current + scheduled) * 10) / 10
+        };
     }
 
     // --- Goal Planner ---
@@ -250,6 +286,7 @@ const CredEngine = (function () {
         deleteEntry,
         calculateBalance,
         calculateBalanceAtDate,
+        calculateProjectedBalance,
         getLedgerWithValues,
         addGoal,
         deleteGoal,

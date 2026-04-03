@@ -153,6 +153,21 @@ var CommentEngine = (function () {
 
     // Generate insight about deficit recovery time
     function getInsight(bal, ledger) {
+        // Check for scheduled withdrawals first
+        var scheduled = ledger.filter(function (e) { return e.scheduled; });
+        if (scheduled.length > 0) {
+            var nextUp = scheduled.reduce(function (a, b) { return a.timestamp < b.timestamp ? a : b; });
+            var daysUntil = Math.ceil((nextUp.timestamp - Date.now()) / 86400000);
+            var projBal = bal + nextUp.value;
+            var projPrefix = projBal >= 0 ? '+' : '';
+            if (projBal < 0 && bal >= 0) {
+                return '🚨 "' + nextUp.desc + '" (' + nextUp.value + ') hits in ' + daysUntil + ' day' + (daysUntil === 1 ? '' : 's') + '. You\'ll be at ' + projPrefix + Math.round(projBal) + '. Start banking cred NOW.';
+            }
+            if (projBal < bal) {
+                return '📅 "' + nextUp.desc + '" (' + nextUp.value + ') is ' + daysUntil + ' day' + (daysUntil === 1 ? '' : 's') + ' out. Projected balance after: ' + projPrefix + Math.round(projBal) + '. Plan accordingly.';
+            }
+        }
+
         if (bal >= 50) {
             // Find highest value deposit that's decaying
             var deposits = ledger.filter(function (e) { return e.type === 'deposit' && e.currentValue > 1; });
