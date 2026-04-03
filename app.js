@@ -205,6 +205,38 @@ function openFullImage(src) {
                 renderAll();
             });
         });
+
+        // Coming Up section
+        var comingUpSection = document.getElementById('coming-up-section');
+        var comingUpItems = document.getElementById('coming-up-items');
+
+        ComingUp.getEvents(function (events) {
+            if (events.length === 0) {
+                comingUpSection.classList.add('hidden');
+                return;
+            }
+            comingUpSection.classList.remove('hidden');
+            var cuHtml = '';
+            events.forEach(function (e) {
+                cuHtml += '<div class="sa-item cu-item">'
+                    + '<div class="sa-emoji">' + e.emoji + '</div>'
+                    + '<div class="sa-name">' + e.name + '</div>'
+                    + '<div class="sa-day">' + (e.day || '') + '</div>'
+                    + '<div class="sa-val neg">' + e.val + '</div>'
+                    + '</div>';
+            });
+            comingUpItems.innerHTML = cuHtml;
+
+            comingUpItems.querySelectorAll('.cu-item').forEach(function (item, idx) {
+                item.addEventListener('click', function () {
+                    var e = events[idx];
+                    CredEngine.addWithdrawal(e.name, e.emoji, e.value, e.rate || 2);
+                    item.style.background = 'rgba(232,163,23,0.3)';
+                    setTimeout(function () { item.style.background = ''; }, 300);
+                    renderAll();
+                });
+            });
+        });
     }
 
     // =============================================

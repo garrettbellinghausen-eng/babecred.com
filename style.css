@@ -633,6 +633,22 @@ body::before {
     padding-bottom: 4px;
 }
 .sa-items::-webkit-scrollbar { display: none; }
+.coming-up-section .sa-item {
+    border-color: rgba(232,163,23,0.3);
+    background: rgba(232,163,23,0.04);
+}
+.coming-up-section .sa-item:active {
+    background: rgba(232,163,23,0.15);
+}
+.sa-day {
+    font-size: 7px;
+    color: var(--olive);
+    margin-top: 1px;
+}
+[data-theme="dark"] .coming-up-section .sa-item {
+    border-color: rgba(232,163,23,0.2);
+    background: rgba(232,163,23,0.06);
+}
 .sa-item {
     flex-shrink: 0;
     padding: 6px 10px;
