@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Generate OG Image</title></head>
 <body style="margin:20px;font-family:sans-serif;">
-<h3>Click to download OG images:</h3>
+<h3>Click to download images:</h3>
 <button onclick="generateMain()">Download Main OG Image</button>
 <button onclick="generateUpdate()">Download Update OG Image</button>
+<button onclick="generateIcon(192)">Download icon-192.png</button>
+<button onclick="generateIcon(512)">Download icon-512.png</button>
 <canvas id="c" width="1200" height="630" style="display:block;margin-top:20px;border:1px solid #ccc;max-width:100%;"></canvas>
 <script>
 function generateMain() {
@@ -67,6 +69,27 @@ function generateUpdate() {
     ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#1A1108';
     ctx.fillText('BABECRED.COM', 600, 618);
     download(c, 'og-update.png');
+}
+function generateIcon(size) {
+    var c = document.getElementById('c');
+    c.width = size; c.height = size;
+    var ctx = c.getContext('2d');
+    var r = size / 2;
+    // Dark background circle
+    ctx.fillStyle = '#1A1108';
+    ctx.fillRect(0, 0, size, size);
+    ctx.beginPath(); ctx.arc(r, r, r * 0.92, 0, Math.PI * 2); ctx.fillStyle = '#1A1108'; ctx.fill();
+    ctx.beginPath(); ctx.arc(r, r, r * 0.92, 0, Math.PI * 2); ctx.strokeStyle = '#E8A317'; ctx.lineWidth = size * 0.03; ctx.stroke();
+    // BC text
+    var fontSize = Math.round(size * 0.42);
+    ctx.font = '900 ' + fontSize + 'px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#FFF8E7';
+    ctx.fillText('B', r - size * 0.12, r);
+    ctx.fillStyle = '#E8A317';
+    ctx.fillText('C', r + size * 0.12, r);
+    download(c, 'icon-' + size + '.png');
 }
 function download(canvas, name) {
     var a = document.createElement('a');

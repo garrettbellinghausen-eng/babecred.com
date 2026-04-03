@@ -812,3 +812,57 @@ function openFullImage(src) {
     }, 60000);
 
 })();
+
+// --- PWA: Service Worker + Install Banner ---
+(function () {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
+
+    var banner = document.getElementById('install-banner');
+    var installBtn = document.getElementById('install-btn');
+    var installDismiss = document.getElementById('install-dismiss');
+    var installHint = document.getElementById('install-hint');
+    var deferredPrompt = null;
+
+    // Don't show if already installed or dismissed
+    if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('babecred_install_dismissed')) {
+        return;
+    }
+
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    var isAndroid = /Android/.test(navigator.userAgent);
+
+    // Android: capture the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        installHint.textContent = 'Add to your home screen';
+        banner.classList.remove('hidden');
+    });
+
+    // iOS: show manual instructions
+    if (isIOS && !navigator.standalone) {
+        installHint.textContent = 'Tap Share → Add to Home Screen';
+        installBtn.textContent = 'How';
+        banner.classList.remove('hidden');
+    }
+
+    installBtn.addEventListener('click', function () {
+        if (deferredPrompt) {
+            // Android native prompt
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function () { banner.classList.add('hidden'); });
+            deferredPrompt = null;
+        } else if (isIOS) {
+            // Show iOS instructions
+            alert('To install BabeCred:\n\n1. Tap the Share button (box with arrow) at the bottom of Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"\n\nDone! BabeCred will appear on your home screen like an app.');
+        }
+    });
+
+    installDismiss.addEventListener('click', function () {
+        banner.classList.add('hidden');
+        localStorage.setItem('babecred_install_dismissed', '1');
+    });
+})();

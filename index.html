@@ -25,12 +25,24 @@
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#1A1108">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=26">
+    <link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
+    <!-- INSTALL BANNER -->
+    <div id="install-banner" class="install-banner hidden">
+        <div class="install-text">
+            <strong>Install BabeCred</strong>
+            <span id="install-hint"></span>
+        </div>
+        <button id="install-btn" class="install-btn">Install</button>
+        <button id="install-dismiss" class="install-x">✕</button>
+    </div>
+
     <!-- ONBOARDING -->
     <div id="onboarding" class="onboarding">
         <!-- Page 1: Welcome -->
@@ -253,10 +265,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="cred-engine.js?v=26"></script>
-    <script src="comments.js?v=26"></script>
-    <script src="coming-up.js?v=26"></script>
-    <script src="chat.js?v=26"></script>
-    <script src="app.js?v=26"></script>
+    <script src="cred-engine.js?v=27"></script>
+    <script src="comments.js?v=27"></script>
+    <script src="coming-up.js?v=27"></script>
+    <script src="chat.js?v=27"></script>
+    <script src="app.js?v=27"></script>
 </body>
 </html>
