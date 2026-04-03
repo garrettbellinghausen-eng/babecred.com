@@ -216,12 +216,61 @@ var ComingUp = (function () {
         return suggestions;
     }
 
+    // --- No-work-tomorrow gaming suggestion ---
+
+    function isUSHoliday(d) {
+        var m = d.getMonth();
+        var day = d.getDate();
+        var dow = d.getDay();
+        // Fixed dates
+        if (m === 0 && day === 1) return true;   // New Year's
+        if (m === 6 && day === 4) return true;   // July 4th
+        if (m === 11 && day === 25) return true;  // Christmas
+        // MLK: 3rd Monday of Jan
+        if (m === 0 && dow === 1 && day >= 15 && day <= 21) return true;
+        // Presidents Day: 3rd Monday of Feb
+        if (m === 1 && dow === 1 && day >= 15 && day <= 21) return true;
+        // Memorial Day: last Monday of May
+        if (m === 4 && dow === 1 && day >= 25) return true;
+        // Labor Day: 1st Monday of Sep
+        if (m === 8 && dow === 1 && day <= 7) return true;
+        // Columbus Day: 2nd Monday of Oct
+        if (m === 9 && dow === 1 && day >= 8 && day <= 14) return true;
+        // Veterans Day
+        if (m === 10 && day === 11) return true;
+        // Thanksgiving: 4th Thursday of Nov
+        if (m === 10 && dow === 4 && day >= 22 && day <= 28) return true;
+        // Day after Thanksgiving
+        if (m === 10 && dow === 5 && day >= 23 && day <= 29) return true;
+        return false;
+    }
+
+    function getGamingNight(now) {
+        var tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var tomorrowDow = tomorrow.getDay();
+        // Weekend (Sat=6, Sun=0) or holiday
+        if (tomorrowDow === 0 || tomorrowDow === 6 || isUSHoliday(tomorrow)) {
+            return [{
+                emoji: '🎮🪵',
+                name: 'Gaming w/ the boys',
+                day: 'No work tomorrow',
+                val: '-20',
+                type: 'withdrawal',
+                value: -20,
+                rate: 2
+            }];
+        }
+        return [];
+    }
+
     // --- Public API ---
 
     function getEvents(callback) {
         var now = new Date();
         var tentpole = getTentpoleEvents(now);
         var seasonal = getSeasonalEvents(now);
+        var gaming = getGamingNight(now);
 
         var tentpoleSports = {};
         tentpole.forEach(function (e) { tentpoleSports[e.emoji] = true; });
@@ -230,7 +279,7 @@ var ComingUp = (function () {
 
         fetchWeather(function (data) {
             var weather = getWeatherSuggestions(data);
-            callback(sports.concat(weather));
+            callback(gaming.concat(sports).concat(weather));
         });
     }
 
