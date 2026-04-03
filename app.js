@@ -358,6 +358,8 @@ function openFullImage(src) {
         { emoji: '💐', name: 'Forgot Valentine\'s Day', value: -100, rate: 1 },
         { emoji: '🏀', name: "Final 4 w/ the boys", value: -200, rate: 1 },
         { emoji: '✈️', name: 'Bachelor party weekend', value: -120, rate: 1 },
+        // Work
+        { emoji: '💼', name: 'Worked late, kids outnumbered her', value: -20, rate: 2 },
     ];
 
     var pickerSelected = null; // the chosen preset
