@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=29">
+    <link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
     <!-- INSTALL BANNER -->
@@ -148,7 +148,7 @@
             <div class="topbar-right">
                 <span class="topbar-name" id="topbar-name"></span>
                 <span class="topbar-balance" id="topbar-balance">0</span>
-                <button class="babe-info-toggle" id="babe-info-toggle" title="Babe Info">💍</button>
+                <button class="babe-info-toggle" id="babe-info-toggle" title="Babe Info"><span id="babe-icon">👸</span></button>
                 <button class="dark-toggle" id="dark-toggle" title="Toggle dark mode">🌙</button>
             </div>
         </header>
@@ -269,14 +269,24 @@
     <!-- BABE INFO MODAL -->
     <div id="babe-modal" class="modal-overlay hidden">
         <div class="modal modal-picker">
-            <div class="picker-title">💍 Babe Info</div>
+            <div class="picker-title"><span id="babe-modal-icon">👸</span> Babe Info</div>
             <p style="font-size:11px;color:var(--olive);text-align:center;margin-bottom:16px;">Key dates the system will track and warn you about.</p>
 
-            <label class="babe-label">Anniversary (MM/DD)</label>
-            <input type="text" id="babe-anniversary" placeholder="06-15" maxlength="5" class="babe-input" autocomplete="off">
+            <label class="babe-label">Choose your queen</label>
+            <div class="babe-icon-picker" id="babe-icon-picker">
+                <span class="babe-icon-opt" data-icon="👸">👸</span>
+                <span class="babe-icon-opt" data-icon="👸🏻">👸🏻</span>
+                <span class="babe-icon-opt" data-icon="👸🏼">👸🏼</span>
+                <span class="babe-icon-opt" data-icon="👸🏽">👸🏽</span>
+                <span class="babe-icon-opt" data-icon="👸🏾">👸🏾</span>
+                <span class="babe-icon-opt" data-icon="👸🏿">👸🏿</span>
+            </div>
 
-            <label class="babe-label">Her Birthday (MM/DD)</label>
-            <input type="text" id="babe-birthday" placeholder="09-22" maxlength="5" class="babe-input" autocomplete="off">
+            <label class="babe-label">Anniversary</label>
+            <input type="date" id="babe-anniversary" class="babe-input" autocomplete="off">
+
+            <label class="babe-label">Her Birthday</label>
+            <input type="date" id="babe-birthday" class="babe-input" autocomplete="off">
 
             <div class="babe-auto">
                 <div class="babe-auto-item">❤️ Valentine's Day — Feb 14 (auto)</div>
@@ -287,7 +297,7 @@
             <div id="babe-custom-list"></div>
             <div class="babe-add-custom">
                 <input type="text" id="babe-custom-name" placeholder="e.g. Her mom's birthday" maxlength="30" class="babe-input babe-custom-field" autocomplete="off">
-                <input type="text" id="babe-custom-date" placeholder="MM-DD" maxlength="5" class="babe-input babe-custom-date" autocomplete="off">
+                <input type="date" id="babe-custom-date" class="babe-input babe-custom-date-cal" autocomplete="off">
                 <button id="babe-custom-add" class="babe-custom-add-btn">+</button>
             </div>
 
@@ -302,11 +312,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="cred-engine.js?v=29"></script>
-    <script src="comments.js?v=29"></script>
-    <script src="babe-info.js?v=29"></script>
-    <script src="coming-up.js?v=29"></script>
-    <script src="chat.js?v=29"></script>
-    <script src="app.js?v=29"></script>
+    <script src="cred-engine.js?v=30"></script>
+    <script src="comments.js?v=30"></script>
+    <script src="babe-info.js?v=30"></script>
+    <script src="coming-up.js?v=30"></script>
+    <script src="chat.js?v=30"></script>
+    <script src="app.js?v=30"></script>
 </body>
 </html>

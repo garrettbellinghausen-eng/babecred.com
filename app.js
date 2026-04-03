@@ -843,12 +843,46 @@ function openFullImage(src) {
 
     var babeModal = document.getElementById('babe-modal');
     var babeToggle = document.getElementById('babe-info-toggle');
+    var babeIconEl = document.getElementById('babe-icon');
+    var babeModalIcon = document.getElementById('babe-modal-icon');
     var babeAnniversary = document.getElementById('babe-anniversary');
     var babeBirthday = document.getElementById('babe-birthday');
     var babeCustomList = document.getElementById('babe-custom-list');
     var babeCustomName = document.getElementById('babe-custom-name');
     var babeCustomDate = document.getElementById('babe-custom-date');
     var tempCustom = [];
+    var selectedIcon = '👸';
+
+    // Helper: date input (YYYY-MM-DD) to MM-DD
+    function dateToMMDD(val) {
+        if (!val) return null;
+        var parts = val.split('-'); // YYYY-MM-DD
+        if (parts.length === 3) return parts[1] + '-' + parts[2];
+        return val;
+    }
+
+    // Helper: MM-DD to YYYY-MM-DD (use current year for display)
+    function mmddToDate(mmdd) {
+        if (!mmdd) return '';
+        return new Date().getFullYear() + '-' + mmdd;
+    }
+
+    // Load saved icon
+    var savedInfo = BabeInfo.getInfo();
+    if (savedInfo.icon) {
+        selectedIcon = savedInfo.icon;
+        babeIconEl.textContent = selectedIcon;
+    }
+
+    function renderBabeIconPicker() {
+        document.querySelectorAll('.babe-icon-opt').forEach(function (opt) {
+            opt.classList.toggle('selected', opt.dataset.icon === selectedIcon);
+            opt.onclick = function () {
+                selectedIcon = this.dataset.icon;
+                renderBabeIconPicker();
+            };
+        });
+    }
 
     function renderBabeCustomList() {
         babeCustomList.innerHTML = '';
@@ -866,18 +900,22 @@ function openFullImage(src) {
 
     babeToggle.addEventListener('click', function () {
         var info = BabeInfo.getInfo();
-        babeAnniversary.value = info.anniversary || '';
-        babeBirthday.value = info.birthday || '';
+        babeAnniversary.value = mmddToDate(info.anniversary);
+        babeBirthday.value = mmddToDate(info.birthday);
+        selectedIcon = info.icon || '👸';
+        babeModalIcon.textContent = selectedIcon;
         tempCustom = (info.custom || []).slice();
         renderBabeCustomList();
+        renderBabeIconPicker();
         babeModal.classList.remove('hidden');
     });
 
     document.getElementById('babe-custom-add').addEventListener('click', function () {
         var name = babeCustomName.value.trim();
-        var date = babeCustomDate.value.trim();
-        if (!name || !date || !/^\d{2}-\d{2}$/.test(date)) return;
-        tempCustom.push({ name: name, date: date, cost: -50 });
+        var dateVal = babeCustomDate.value;
+        if (!name || !dateVal) return;
+        var mmdd = dateToMMDD(dateVal);
+        tempCustom.push({ name: name, date: mmdd, cost: -50 });
         babeCustomName.value = '';
         babeCustomDate.value = '';
         renderBabeCustomList();
@@ -889,10 +927,12 @@ function openFullImage(src) {
 
     document.getElementById('babe-save').addEventListener('click', function () {
         BabeInfo.setInfo({
-            anniversary: babeAnniversary.value.trim() || null,
-            birthday: babeBirthday.value.trim() || null,
+            anniversary: dateToMMDD(babeAnniversary.value) || null,
+            birthday: dateToMMDD(babeBirthday.value) || null,
+            icon: selectedIcon,
             custom: tempCustom
         });
+        babeIconEl.textContent = selectedIcon;
         babeModal.classList.add('hidden');
         renderAll();
     });
