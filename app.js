@@ -319,9 +319,23 @@ function openFullImage(src) {
 
     function getPickerTimestamp(when, dateVal) {
         if (when === 'now') return Date.now();
-        if (when === 'yesterday') { var y = new Date(); y.setDate(y.getDate() - 1); return y.getTime(); }
-        if (when === 'tomorrow') { var t = new Date(); t.setDate(t.getDate() + 1); return t.getTime(); }
-        if (when === 'custom' && dateVal) return new Date(dateVal).getTime();
+        if (when === 'yesterday') {
+            var y = new Date();
+            y.setDate(y.getDate() - 1);
+            y.setHours(12, 0, 0, 0);
+            return y.getTime();
+        }
+        if (when === 'tomorrow') {
+            var t = new Date();
+            t.setDate(t.getDate() + 1);
+            t.setHours(0, 0, 0, 0); // midnight — activates as soon as the day starts
+            return t.getTime();
+        }
+        if (when === 'custom' && dateVal) {
+            var d = new Date(dateVal);
+            d.setHours(0, 0, 0, 0);
+            return d.getTime();
+        }
         return Date.now();
     }
 
@@ -457,8 +471,11 @@ function openFullImage(src) {
     function formatFutureDate(ts) {
         var d = new Date(ts);
         var now = new Date();
-        var diffDays = Math.ceil((ts - now.getTime()) / 86400000);
-        if (diffDays <= 1) return 'Tomorrow';
+        var target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var diffDays = Math.round((target - today) / 86400000);
+        if (diffDays <= 0) return 'Today';
+        if (diffDays === 1) return 'Tomorrow';
         if (diffDays <= 7) return 'In ' + diffDays + ' days';
         return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
