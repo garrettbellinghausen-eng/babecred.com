@@ -1017,6 +1017,15 @@ body::before {
     text-align: center;
     margin-top: 8px;
 }
+.how-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 9px;
+    color: var(--mustard);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+}
+.how-link:hover { text-decoration: underline; }
 .bc-insight {
     font-size: 9px;
     color: var(--olive);

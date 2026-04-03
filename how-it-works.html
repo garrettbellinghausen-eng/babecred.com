@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>BabeCred — How It Works</title>
+    <meta property="og:title" content="BabeCred — How The System Works">
+    <meta property="og:description" content="Deposits decay. Withdrawals stick. The math is rigged against you. Here's how to survive.">
+    <meta property="og:image" content="https://babecred.com/og-main.png">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Mono', monospace;
+            background: #FFF8E7;
+            color: #3B1F0B;
+            line-height: 1.7;
+        }
+        .topbar {
+            background: #1A1108;
+            color: #FFF8E7;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-family: 'Anybody', sans-serif; font-weight: 900; font-size: 20px; text-decoration: none; color: #FFF8E7; }
+        .logo span { color: #E8A317; }
+        .back-link { font-size: 11px; color: #E8A317; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+
+        .hero {
+            background: #1A1108;
+            color: #FFF8E7;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: clamp(28px, 6vw, 48px);
+            margin-bottom: 8px;
+        }
+        .hero p { font-size: 13px; color: #6B6B3C; max-width: 500px; margin: 0 auto; }
+
+        .content { max-width: 640px; margin: 0 auto; padding: 32px 20px 60px; }
+
+        h2 {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            margin: 32px 0 12px;
+            color: #3B1F0B;
+        }
+        h2:first-child { margin-top: 0; }
+
+        p, li { font-size: 13px; margin-bottom: 12px; }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; }
+
+        .rule-box {
+            background: #1A1108;
+            color: #FFF8E7;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .rule-box .rule-title {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 18px;
+            color: #E8A317;
+            margin-bottom: 8px;
+        }
+        .rule-box p { color: #FFF8E7; font-size: 12px; margin-bottom: 0; }
+
+        .example {
+            background: #F5EDD6;
+            border-left: 3px solid #E8A317;
+            padding: 16px;
+            border-radius: 0 6px 6px 0;
+            margin: 16px 0;
+        }
+        .example .ex-title { font-weight: 700; font-size: 12px; margin-bottom: 6px; color: #E8A317; }
+        .example p { font-size: 11px; margin-bottom: 4px; }
+
+        .decay-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 11px;
+        }
+        .decay-table th {
+            background: #1A1108;
+            color: #FFF8E7;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .decay-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(59,31,11,0.1);
+        }
+        .decay-table tr:nth-child(even) { background: #F5EDD6; }
+        .pos { color: #008844; font-weight: 700; }
+        .neg { color: #CC5500; font-weight: 700; }
+
+        .kids-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 11px;
+        }
+        .kids-table th {
+            background: #CC5500;
+            color: #FFF8E7;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 10px;
+        }
+        .kids-table td { padding: 8px 10px; border-bottom: 1px solid rgba(59,31,11,0.1); }
+        .kids-table tr:nth-child(even) { background: #F5EDD6; }
+
+        .callout {
+            background: rgba(204,85,0,0.08);
+            border-left: 3px solid #CC5500;
+            padding: 16px;
+            border-radius: 0 6px 6px 0;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+        .callout strong { color: #CC5500; }
+
+        .strategy-card {
+            border: 2px solid #E8A317;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .strategy-card h3 {
+            font-family: 'Anybody', sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        .strategy-card p { font-size: 11px; margin-bottom: 0; }
+
+        .cta-bar {
+            background: #1A1108;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .cta-btn {
+            display: inline-block;
+            padding: 14px 40px;
+            background: #E8A317;
+            color: #1A1108;
+            text-decoration: none;
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .cta-btn:hover { background: #CC5500; color: #FFF8E7; }
+        .cta-sub { font-size: 10px; color: #6B6B3C; margin-top: 8px; }
+
+        .footer {
+            background: #1A1108;
+            color: rgba(255,248,231,0.3);
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="/" class="logo">Babe<span>Cred</span></a>
+    <a href="/" class="back-link">← Back to app</a>
+</div>
+
+<div class="hero">
+    <h1>How BabeCred Works</h1>
+    <p>The math behind the system. It's rigged against you. Here's how to survive anyway.</p>
+</div>
+
+<div class="content">
+
+    <h2>The Two Rules</h2>
+
+    <div class="rule-box">
+        <div class="rule-title">Rule #1: Deposits Decay</div>
+        <p>Good things you do lose value over time. She forgets. It's not personal — it's biology. Last week's flowers? Already fading.</p>
+    </div>
+
+    <div class="rule-box">
+        <div class="rule-title">Rule #2: Withdrawals Stick</div>
+        <p>Bad things recover slowly. Very slowly. She remembers that boys' weekend for weeks. The gaming session from last Tuesday? Still on the books.</p>
+    </div>
+
+    <h2>How Deposits Work</h2>
+
+    <p>Every deposit has a <strong>half-life</strong> — the number of days until it's worth half as much. Then half again. Then half again. Until it's basically zero.</p>
+
+    <table class="decay-table">
+        <tr><th>Action</th><th>Cred</th><th>Half-Life</th><th>Gone by</th></tr>
+        <tr><td>📱 Liked her post</td><td class="pos">+1</td><td>1 day</td><td>~3 days</td></tr>
+        <tr><td>☕ Brought her coffee</td><td class="pos">+5</td><td>1 day</td><td>~3 days</td></tr>
+        <tr><td>🍳 Made breakfast</td><td class="pos">+12</td><td>2 days</td><td>~1 week</td></tr>
+        <tr><td>💐 Flowers (no reason)</td><td class="pos">+15</td><td>3 days</td><td>~10 days</td></tr>
+        <tr><td>🗑️ Trash (unasked)</td><td class="pos">+25</td><td>2 days</td><td>~1 week</td></tr>
+        <tr><td>✨ Surprise date night</td><td class="pos">+30</td><td>5 days</td><td>~3 weeks</td></tr>
+        <tr><td>👶 Took the kids</td><td class="pos">+40</td><td>5 days</td><td>~3 weeks</td></tr>
+        <tr><td>✈️ Planned a trip</td><td class="pos">+60</td><td>9 days</td><td>~5 weeks</td></tr>
+    </table>
+
+    <div class="example">
+        <div class="ex-title">Example: You bring flowers (+15, 3-day half-life)</div>
+        <p>Day 0: <span class="pos">+15</span> — she's happy</p>
+        <p>Day 3: <span class="pos">+7.5</span> — "oh yeah, those were nice"</p>
+        <p>Day 6: <span class="pos">+3.75</span> — barely remembers</p>
+        <p>Day 10: <span class="pos">+0.9</span> — what flowers?</p>
+    </div>
+
+    <h2>How Withdrawals Work</h2>
+
+    <p>Withdrawals recover at a <strong>fixed rate</strong> — usually +2 cred per day, crawling back toward zero. No half-life. Just a long, slow grind.</p>
+
+    <table class="decay-table">
+        <tr><th>Action</th><th>Cred</th><th>Recovery</th><th>Days to clear</th></tr>
+        <tr><td>😐 "You look fine"</td><td class="neg">-10</td><td>+2/day</td><td>5 days</td></tr>
+        <tr><td>🎮 "One more game"</td><td class="neg">-20</td><td>+2/day</td><td>10 days</td></tr>
+        <tr><td>⛳ Golf day</td><td class="neg">-25</td><td>+2/day</td><td>12 days</td></tr>
+        <tr><td>🍺 Boys' night</td><td class="neg">-30</td><td>+2/day</td><td>15 days</td></tr>
+        <tr><td>🏈 Boys' weekend</td><td class="neg">-80</td><td>+2/day</td><td>40 days</td></tr>
+        <tr><td>📅 Forgot anniversary</td><td class="neg">-150</td><td>+1/day</td><td>150 days</td></tr>
+        <tr><td>🏀 Final 4 w/ the boys</td><td class="neg">-200</td><td>+1/day</td><td>200 days</td></tr>
+    </table>
+
+    <div class="example">
+        <div class="ex-title">Example: Boys' weekend (-80, +2/day recovery)</div>
+        <p>Day 0: <span class="neg">-80</span> — she's not talking to you</p>
+        <p>Day 10: <span class="neg">-60</span> — still cold</p>
+        <p>Day 20: <span class="neg">-40</span> — starting to thaw</p>
+        <p>Day 40: <span class="neg">0</span> — finally cleared. Took 6 weeks.</p>
+    </div>
+
+    <div class="callout">
+        <strong>See the problem?</strong> Flowers take 10 days to disappear. A boys' weekend takes 40 days. You need to bring flowers four times just to offset one weekend. And each round of flowers is decaying while you're bringing the next one.
+    </div>
+
+    <h2>The Kids Multiplier</h2>
+
+    <p>More kids = more chaos = she forgets your good deeds even faster. Her brain is running at capacity. The system accounts for this.</p>
+
+    <table class="kids-table">
+        <tr><th>Kids</th><th>Deposit Decay Speed</th><th>Effect</th></tr>
+        <tr><td>0</td><td>Normal (1x)</td><td>She has all her attention on you</td></tr>
+        <tr><td>1</td><td>Slightly faster (0.9x)</td><td>Some buffer. Almost normal.</td></tr>
+        <tr><td>2</td><td>25% faster (0.75x)</td><td>She's busy. Good deeds fade quicker.</td></tr>
+        <tr><td>3</td><td>40% faster (0.6x)</td><td>Outnumbered. Deposits evaporate.</td></tr>
+        <tr><td>4+</td><td>50% faster (0.5x)</td><td>Chaos mode. Flowers? What flowers?</td></tr>
+    </table>
+
+    <div class="example">
+        <div class="ex-title">Example: Flowers (+15) with 4 kids</div>
+        <p>Normal half-life: 3 days → With 4 kids: <strong>1.5 days</strong></p>
+        <p>Day 0: <span class="pos">+15</span></p>
+        <p>Day 1.5: <span class="pos">+7.5</span></p>
+        <p>Day 3: <span class="pos">+3.75</span></p>
+        <p>Day 5: <span class="pos">+1</span> — gone. Meanwhile the boys' weekend is still at -70.</p>
+    </div>
+
+    <h2>Your Balance</h2>
+
+    <p>Your balance is calculated in real-time: the sum of all your decaying deposits plus all your slowly-recovering withdrawals. It's a moving target that's always sinking unless you're actively depositing.</p>
+
+    <div class="callout">
+        <strong>You are almost always negative.</strong> That's not a bug — it's the system working as designed. Relationships require constant maintenance. The default state is deficit.
+    </div>
+
+    <h2>How to Win</h2>
+
+    <div class="strategy-card">
+        <h3>🎯 Strategy #1: Plan Ahead</h3>
+        <p>Big withdrawal coming? (Boys' weekend, Final Four, golf trip) Start banking cred NOW. You need to overshoot because your deposits decay while you save. Scheduling future withdrawals shows you the projected impact.</p>
+    </div>
+
+    <div class="strategy-card">
+        <h3>📈 Strategy #2: Compound Interest</h3>
+        <p>Small daily deposits beat one big gesture. Taking out the trash every day (+25 each time) keeps a steady flow of cred even as each one decays. Consistency > grand gestures.</p>
+    </div>
+
+    <div class="strategy-card">
+        <h3>⚡ Strategy #3: Unprompted > Asked</h3>
+        <p>Did she ask you to do it? It still counts, but it's worth less. The same action done unprompted — because you just noticed it needed doing — is worth significantly more. She notices.</p>
+    </div>
+
+    <div class="strategy-card">
+        <h3>🚫 Strategy #4: Avoid Catastrophics</h3>
+        <p>Forgetting an anniversary (-150, +1/day) takes 5 months to clear. No amount of flowers fixes that. Set up Babe Info (tap 👸) so the system warns you in advance. Prevention > recovery.</p>
+    </div>
+
+    <div class="strategy-card">
+        <h3>🏆 Strategy #5: Check the Leaderboard</h3>
+        <p>If you're in the Top 5, you can golf. If you're in the Bottom 5, stay home and do the dishes. The leaderboard doesn't lie.</p>
+    </div>
+
+</div>
+
+<div class="cta-bar">
+    <a href="/" class="cta-btn">Open BabeCred →</a>
+    <div class="cta-sub">All cred is final. No refunds. No appeals.</div>
+</div>
+
+<div class="footer">
+    &copy; 2025 BabeCred.com ✦ A very serious financial institution ✦ All cred reserved
+</div>
+
+</body>
+</html>
