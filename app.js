@@ -813,7 +813,97 @@ function openFullImage(src) {
     function renderAll() {
         renderBalance();
         renderLedger();
+        pushLeaderboard();
     }
+
+    // --- Leaderboard ---
+
+    var lbRef = null;
+    var lbTop = document.getElementById('lb-top');
+    var lbBottom = document.getElementById('lb-bottom');
+    var lbBody = document.getElementById('lb-body');
+    var lbArrow = document.getElementById('lb-arrow');
+
+    // Toggle collapse
+    document.getElementById('lb-toggle').addEventListener('click', function () {
+        lbBody.classList.toggle('hidden');
+        lbArrow.classList.toggle('collapsed');
+    });
+
+    function pushLeaderboard() {
+        if (!userName || isAnon) return;
+        try {
+            var db = firebase.database();
+            var bal = Math.round(CredEngine.calculateBalance());
+            db.ref('leaderboard/' + userName).set({
+                name: userName,
+                balance: bal,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        } catch (e) {}
+    }
+
+    function listenLeaderboard() {
+        try {
+            var db = firebase.database();
+            lbRef = db.ref('leaderboard');
+            lbRef.on('value', function (snap) {
+                var users = [];
+                snap.forEach(function (child) {
+                    users.push(child.val());
+                });
+                renderLeaderboard(users);
+            });
+        } catch (e) {}
+    }
+
+    var MEDALS = ['🥇', '🥈', '🥉', '4.', '5.'];
+
+    function renderLeaderboard(users) {
+        if (users.length === 0) {
+            lbTop.innerHTML = '<div class="lb-empty">No one on the board yet.</div>';
+            lbBottom.innerHTML = '';
+            return;
+        }
+
+        // Sort by balance descending
+        users.sort(function (a, b) { return b.balance - a.balance; });
+
+        var top5 = users.slice(0, 5);
+        var bottom5 = users.filter(function (u) { return u.balance < 0; })
+            .sort(function (a, b) { return a.balance - b.balance; })
+            .slice(0, 5);
+
+        lbTop.innerHTML = '';
+        top5.forEach(function (u, i) {
+            var isYou = u.name === userName;
+            var prefix = u.balance >= 0 ? '+' : '';
+            var cls = u.balance >= 0 ? 'pos' : 'neg';
+            var medal = i < 3 ? '<span class="lb-medal">' + MEDALS[i] + '</span>' : '<span class="lb-rank">' + (i + 1) + '</span>';
+            lbTop.innerHTML += '<div class="lb-row">'
+                + medal
+                + '<span class="lb-name' + (isYou ? ' lb-you' : '') + '">' + u.name + (isYou ? ' (you)' : '') + '</span>'
+                + '<span class="lb-score ' + cls + '">' + prefix + u.balance + '</span>'
+                + '</div>';
+        });
+
+        if (bottom5.length === 0) {
+            lbBottom.innerHTML = '<div class="lb-empty">Nobody in the red. Suspicious.</div>';
+        } else {
+            lbBottom.innerHTML = '';
+            bottom5.forEach(function (u, i) {
+                var isYou = u.name === userName;
+                lbBottom.innerHTML += '<div class="lb-row">'
+                    + '<span class="lb-rank">' + (i + 1) + '</span>'
+                    + '<span class="lb-name' + (isYou ? ' lb-you' : '') + '">' + u.name + (isYou ? ' (you)' : '') + '</span>'
+                    + '<span class="lb-score neg">' + u.balance + '</span>'
+                    + '</div>';
+            });
+        }
+    }
+
+    // Start listening after sign on
+    listenLeaderboard();
 
     // --- Mobile tab switching ---
 
