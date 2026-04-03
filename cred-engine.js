@@ -48,7 +48,9 @@ const CredEngine = (function () {
     }
 
     function isFuture(entry) {
-        return entry.timestamp > Date.now();
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        return entry.timestamp > today;
     }
 
     function entryCurrentValue(entry) {

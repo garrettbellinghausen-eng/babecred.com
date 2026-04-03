@@ -317,26 +317,27 @@ function openFullImage(src) {
         document.getElementById('picker-date').classList.add('hidden');
     }
 
+    function startOfDay(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+    }
+
     function getPickerTimestamp(when, dateVal) {
-        if (when === 'now') return Date.now();
+        var today = new Date();
+        if (when === 'now') return startOfDay(today);
         if (when === 'yesterday') {
-            var y = new Date();
+            var y = new Date(today);
             y.setDate(y.getDate() - 1);
-            y.setHours(12, 0, 0, 0);
-            return y.getTime();
+            return startOfDay(y);
         }
         if (when === 'tomorrow') {
-            var t = new Date();
+            var t = new Date(today);
             t.setDate(t.getDate() + 1);
-            t.setHours(0, 0, 0, 0); // midnight — activates as soon as the day starts
-            return t.getTime();
+            return startOfDay(t);
         }
         if (when === 'custom' && dateVal) {
-            var d = new Date(dateVal);
-            d.setHours(0, 0, 0, 0);
-            return d.getTime();
+            return startOfDay(new Date(dateVal));
         }
-        return Date.now();
+        return startOfDay(today);
     }
 
     // Search/filter
